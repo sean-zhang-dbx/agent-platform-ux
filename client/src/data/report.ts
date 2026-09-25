@@ -7,63 +7,62 @@ export interface Citation {
 }
 
 export const CITATIONS: Citation[] = [
-  { id: 'C1', agent: 'clinical', source: 'demo.pharma.clinical_trials · trials ZOS-301, ZOS-302, ZOS-305' },
+  { id: 'C1', agent: 'clinical', source: 'demo.pharma.clinical_trials · trials NWV-301, NWV-302, NWV-305' },
   { id: 'C2', agent: 'clinical', source: 'demo.pharma.trial_endpoints · primary endpoint rows' },
-  { id: 'C3', agent: 'regintel', source: 'regulatory_docs/prior_submission_summary_2019.pdf, p.4' },
-  { id: 'C4', agent: 'regintel', source: 'regulatory_docs/ha_query_log_zoster.pdf, p.11' },
-  { id: 'C5', agent: 'quality', source: 'demo.pharma.deviations · DEV-2291, DEV-2304' },
-  { id: 'C6', agent: 'quality', source: 'demo.pharma.batch_release · lots 24A01 to 24A04' },
+  { id: 'C3', agent: 'regintel', source: 'regulatory_docs/ha_query_log_zoster.pdf, p.11 · prior answer' },
+  { id: 'C4', agent: 'regintel', source: 'regulatory_docs/prior_submission_summary_2019.pdf, p.4' },
+  { id: 'C5', agent: 'quality', source: 'rd_reg.docs.labels · approved USPI, section 8.1' },
+  { id: 'C6', agent: 'quality', source: 'demo.pharma.trial_endpoints · cross-checked via Clinical Trials Genie' },
 ];
 
-export const AGENT_FINDINGS: Record<AgentId, { headline: string; short: string; bullets: string[] }> = {
+export const AGENT_FINDINGS: Record<string, { headline: string; short: string; bullets: string[] }> = {
   clinical: {
-    headline: 'Primary endpoint met across 3 Phase III trials',
-    short: 'Endpoint met · 3 trials',
+    headline: 'CSR clinical summary drafted from the locked data',
+    short: 'CSR sections drafted',
     bullets: [
-      '14,210 participants across ZOS-301, 302 and 305 [C1]',
-      'Vaccine efficacy 91.3% (95% CI 86.9 to 94.4) [C2]',
-      'No new safety signal versus the Phase II profile [C2]',
+      'Module 2.5 + 2.7 efficacy/safety sections drafted, every figure traced to a locked endpoint row [C1][C2]',
+      'Vaccine efficacy 91.3% (95% CI 86.9 to 94.4), no new safety signal [C2]',
+      'First-draft in minutes, not weeks — the authoring long pole, not the science',
     ],
   },
   regintel: {
-    headline: '3 comparable filings, median 41 weeks to approval',
-    short: '3 precedents · 41 wks median',
+    headline: 'First-pass answers to 7 likely HA questions',
+    short: '7 HA answers drafted',
     bullets: [
-      'Closest precedent: adjuvanted zoster booster, 2019 filing [C3]',
-      'Most common HA query: immunogenicity bridging between lots [C4]',
-      'Risk flag: bridging data should be in Module 2.7.3 up front [C4]',
+      '6 of 7 matched an approved prior answer (HAQ&R), reused and cited [C3]',
+      'Closest precedent: adjuvanted zoster booster, 2019 filing [C4]',
+      'Immunogenicity bridging: first reply drafted from the 2019 response [C3]',
     ],
   },
   quality: {
-    headline: '1 blocking deviation, 1 non-blocking',
-    short: '1 blocking deviation',
+    headline: 'Consistency clean; 1 labelling mismatch to resolve',
+    short: '1 labelling mismatch',
     bullets: [
-      'DEV-2291 (major, fill-finish line): open, target close 14 Oct [C5]',
-      'DEV-2304 (minor, labelling): open, not blocking [C5]',
-      '4 of 4 lots released, none on hold [C6]',
-      'Note: one read was denied (out of scope) and logged. Routed via batch_release instead.',
+      'Figures agree across every drafted section [C6]',
+      'One dose-interval term differs from the approved USPI [C5]',
+      'Note: a patient-level read was denied (out of scope) and logged. Rerouted to the certified trial-level summary [C6]',
     ],
   },
   drafter: {
-    headline: 'Readiness report drafted, 3 items flagged',
-    short: 'Report drafted · 3 flags',
-    bullets: ['5 sections, every claim cited', 'Cannot submit: routed to the RA lead for approval'],
+    headline: 'eCTD Module 2 assembled, 2 items flagged',
+    short: 'Dossier assembled · 2 flags',
+    bullets: ['Drafted sections placed into the eCTD structure, every claim cited', 'Cannot submit: routed to the RA lead for approval'],
   },
 };
 
 export const REPORT = {
-  recommendation: 'CONDITIONAL GO',
-  recommendationDetail: 'Ready to file once DEV-2291 is closed and the bridging data is added to Module 2.7.3.',
+  recommendation: 'DRAFT COMPLETE · 2 ITEMS',
+  recommendationDetail: 'A cited Module 2 dossier draft is ready to review. Resolve the labelling term and confirm the reused HA answer, then sign to file.',
   sections: [
-    { title: 'Clinical summary', body: 'Primary efficacy endpoint met in all 3 pivotal trials, with no new safety signal.', cites: ['C1', 'C2'] },
-    { title: 'Regulatory precedent', body: 'Three comparable filings, median 41 weeks to approval. Immunogenicity bridging was the most frequent HA query.', cites: ['C3', 'C4'] },
-    { title: 'Quality gate', body: 'One major deviation on the fill-finish line is still open and would block filing. All lots are released.', cites: ['C5', 'C6'] },
-    { title: 'Timeline estimate', body: 'If DEV-2291 closes by 14 Oct, filing is feasible in the current quarter.', cites: ['C3', 'C5'] },
+    { title: 'Clinical summary (CSR)', body: 'Module 2.5 and 2.7 sections drafted from the locked data. Primary endpoint met in all 3 pivotal trials, no new safety signal — every figure cited.', cites: ['C1', 'C2'] },
+    { title: 'HA responses', body: 'First-pass answers drafted for the 7 likely questions; 6 reused an approved prior answer found by HAQ&R. Immunogenicity bridging drafted from the 2019 response.', cites: ['C3', 'C4'] },
+    { title: 'Consistency & labelling', body: 'Numbers agree across sections. One dose-interval term differs from the approved USPI and needs a decision before filing.', cites: ['C5', 'C6'] },
+    { title: 'eCTD assembly', body: 'Sections placed into the Module 2 structure. Authoring done in this run is the 6-of-8-week long pole Northwind is compressing (41 → 14.9 weeks, targeting 8).', cites: ['C1', 'C3'] },
   ],
   flags: [
-    { level: 'blocking', text: 'DEV-2291 is open (major). Filing blocked until it is closed.' },
-    { level: 'attention', text: 'Add lot-to-lot immunogenicity bridging to Module 2.7.3 before submission.' },
-    { level: 'attention', text: 'Quality Review Agent hit an access denial. Confirm the batch_release route is acceptable evidence.' },
+    { level: 'attention', text: 'Labelling: a dose-interval term differs from the approved USPI. Confirm the wording before filing.' },
+    { level: 'attention', text: 'HA response on immunogenicity bridging reuses the 2019 answer. Confirm it still applies to this lot.' },
+    { level: 'attention', text: 'QC & Consistency Agent hit an access denial on patient-level data. Confirm the trial-level route is acceptable evidence.' },
   ],
 };
 
@@ -77,11 +76,11 @@ export const EVIDENCE_ROWS: { agent: AgentId | 'orchestrator'; trace: string; mo
 
 // Platform-evaluated acceptance checks declared by the capability (MLflow scorers in the live build).
 export const ACCEPTANCE_RESULTS = [
-  { name: 'Citations', result: '14 / 14 claims cited' },
-  { name: 'Completeness', result: '4 / 4 sections' },
-  { name: 'Correctness', result: '0.91 vs expert answer' },
+  { name: 'Citations', result: '18 / 18 drafted claims cited' },
+  { name: 'Completeness', result: 'CSR + Module 2 sections' },
+  { name: 'Consistency', result: 'labelling matches source' },
   { name: 'Approved sources only', result: 'no uncertified data used' },
 ];
 
 export const DEFAULT_REQUEST =
-  'Assess submission readiness for compound GSK-2894512 (Shingrix booster, Phase III complete). Pull the clinical summary, check regulatory history for similar submissions, review any open quality deviations that could block filing, and draft a readiness report with a go/no-go recommendation. Flag anything that needs my attention before I sign off.';
+  'Author the submission dossier for compound NWP-2894512 (adult vaccine booster, Phase III complete, database locked). Draft the CSR clinical summary and efficacy/safety sections from the locked data, check labelling and cross-section consistency, draft first-pass responses to the likely health-authority questions from our prior Q&A, and assemble the eCTD Module 2. Cite every claim and flag anything that needs my call before I sign off.';

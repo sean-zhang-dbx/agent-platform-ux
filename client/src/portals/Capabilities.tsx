@@ -5,14 +5,16 @@ import {
   ArrowRight,
   BadgeCheck,
   Boxes,
+  Brain,
   Gauge,
   MapPin,
   MessageSquare,
   Plus,
   ShieldCheck,
+  Waypoints,
 } from 'lucide-react';
 import { useStore } from '../state/store';
-import { SRA_ID, type Capability } from '../data/capabilities';
+import { SRA_ID, type Capability, type ContextSource } from '../data/capabilities';
 import { DOMAINS, PLATFORM, WORK_ITEMS, gxpHold, podById, podMemberCount, podPlatformAgents } from '../data/estate';
 import { Chip, PageHeader, Panel, PrimaryButton, SecondaryButton } from '../components/ui';
 import { DataTable, FilterSelect, type Column } from '../components/DataTable';
@@ -132,7 +134,7 @@ export function CapabilitiesPortal() {
     <div>
       <PageHeader
         title="Capabilities"
-        sub="What GSK can do, packaged: skills + tools + data + context."
+        sub="What Northwind can do, packaged: skills + tools + data + context."
         right={
           <PrimaryButton onClick={() => void navigate('/capabilities/new')}>
             <Plus className="h-4 w-4" /> New capability
@@ -184,22 +186,69 @@ export function CapabilitiesPortal() {
 
 // ── Detail ────────────────────────────────────────────────────────────────────
 
-function ContextPanel({ c }: { c: Capability }) {
+function RequestContext({ c }: { c: Capability }) {
+  return (
+    <div>
+      <div className="mb-2 flex items-center gap-1.5 text-xs font-semibold text-[var(--ink-soft)]">
+        <MapPin className="h-3.5 w-3.5 text-[var(--brand)]" /> From the request
+      </div>
+      <div className="space-y-1.5">
+        {c.context.map((x) => (
+          <div key={x.key} className="flex justify-between gap-2 text-sm">
+            <span className="text-[var(--ink-faint)]">{x.key}</span>
+            <span className="text-right font-medium">{x.value}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function OntologyRules({ c }: { c: Capability }) {
+  return (
+    <div className="grid gap-2 lg:grid-cols-2">
+      {c.ontology.map((o) => (
+        <div key={o.text} className="rounded-lg border border-[var(--line)] p-3">
+          <div className="flex items-center justify-between gap-2">
+            <span className="text-xs font-semibold text-[var(--ink-soft)]">{o.kind}</span>
+            {o.origin === 'Curated' ? (
+              <Chip tone="ok">
+                <BadgeCheck className="h-3 w-3" /> Curated
+              </Chip>
+            ) : (
+              <Chip>Inferred</Chip>
+            )}
+          </div>
+          <p className="mt-1.5 text-sm">{o.text}</p>
+          <div className="mt-2 flex items-center gap-2 text-[11px] text-[var(--ink-faint)]">
+            <span className="min-w-0 flex-1 truncate" title={o.source}>
+              {o.source}
+            </span>
+            <span
+              className="h-1.5 w-14 overflow-hidden rounded-full bg-[#eee8e2]"
+              title={`Authority ${o.authority.toFixed(2)}`}
+            >
+              <span
+                className="block h-full rounded-full bg-[var(--ink-soft)]"
+                style={{ width: `${(o.authority * 100).toString()}%` }}
+              />
+            </span>
+            <span className="tabular-nums">{o.authority.toFixed(2)}</span>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+// Simple two-column view: request context + ontology rules. Used by every capability that has not
+// been authored with explicit context sources.
+function SimpleContextPanel({ c }: { c: Capability }) {
   return (
     <Panel className="overflow-hidden">
       <div className="grid md:grid-cols-[15rem_1fr]">
         <div className="border-b border-[var(--line)] p-4 md:border-r md:border-b-0">
-          <div className="mb-2 flex items-center gap-1.5 text-xs font-semibold text-[var(--ink-soft)]">
-            <MapPin className="h-3.5 w-3.5 text-[var(--brand)]" /> From the request
-          </div>
-          <div className="space-y-1.5">
-            {c.context.map((x) => (
-              <div key={x.key} className="flex justify-between gap-2 text-sm">
-                <span className="text-[var(--ink-faint)]">{x.key}</span>
-                <span className="text-right font-medium">{x.value}</span>
-              </div>
-            ))}
-          </div>
+          <RequestContext c={c} />
         </div>
         <div className="p-4">
           <div className="mb-2 flex flex-wrap items-center gap-2">
@@ -207,38 +256,7 @@ function ContextPanel({ c }: { c: Capability }) {
             <MaturityBadge status="Public Preview" />
             <span className="text-xs text-[var(--ink-faint)]">shared with Genie One and Genie Code</span>
           </div>
-          <div className="grid gap-2 lg:grid-cols-2">
-            {c.ontology.map((o) => (
-              <div key={o.text} className="rounded-lg border border-[var(--line)] p-3">
-                <div className="flex items-center justify-between gap-2">
-                  <span className="text-xs font-semibold text-[var(--ink-soft)]">{o.kind}</span>
-                  {o.origin === 'Curated' ? (
-                    <Chip tone="ok">
-                      <BadgeCheck className="h-3 w-3" /> Curated
-                    </Chip>
-                  ) : (
-                    <Chip>Inferred</Chip>
-                  )}
-                </div>
-                <p className="mt-1.5 text-sm">{o.text}</p>
-                <div className="mt-2 flex items-center gap-2 text-[11px] text-[var(--ink-faint)]">
-                  <span className="min-w-0 flex-1 truncate" title={o.source}>
-                    {o.source}
-                  </span>
-                  <span
-                    className="h-1.5 w-14 overflow-hidden rounded-full bg-[#eee8e2]"
-                    title={`Authority ${o.authority.toFixed(2)}`}
-                  >
-                    <span
-                      className="block h-full rounded-full bg-[var(--ink-soft)]"
-                      style={{ width: `${(o.authority * 100).toString()}%` }}
-                    />
-                  </span>
-                  <span className="tabular-nums">{o.authority.toFixed(2)}</span>
-                </div>
-              </div>
-            ))}
-          </div>
+          <OntologyRules c={c} />
           <div className="mt-2 text-[11px] text-[var(--ink-faint)]">
             Authority reflects source, usage and freshness. Pod agents get this context by asking Genie One.
           </div>
@@ -246,6 +264,155 @@ function ContextPanel({ c }: { c: Capability }) {
       </div>
     </Panel>
   );
+}
+
+const LANE_META: Record<ContextSource['lane'], string> = {
+  Lakehouse: 'var(--brand)',
+  Regulated: '#4a3aa7',
+  Collaboration: 'var(--info)',
+};
+
+function SourceCard({ s }: { s: ContextSource }) {
+  return (
+    <div className="min-w-0 rounded-lg border border-[var(--line)] bg-white p-3">
+      <div className="flex items-baseline gap-1.5">
+        <span className="h-2 w-2 shrink-0 translate-y-[-1px] rounded-full" style={{ background: LANE_META[s.lane] }} />
+        <span className="text-sm font-semibold">{s.name}</span>
+        <span className="text-[11px] text-[var(--ink-faint)]">{s.lane}</span>
+      </div>
+      <ul className="mt-2 space-y-1">
+        {s.items.map((it) => {
+          const code = it.via === 'table' || it.via === 'metric view' || it.via === 'graph';
+          return (
+            <li key={it.name} className="flex items-center justify-between gap-2">
+              <span
+                className={cx('min-w-0 truncate text-[12px] text-[var(--ink-soft)]', code && 'font-mono text-[11px]')}
+                title={it.name}
+              >
+                {it.name}
+              </span>
+              <span className="shrink-0 rounded bg-[var(--canvas)] px-1.5 py-0.5 text-[10px] text-[var(--ink-faint)]">
+                {it.via}
+              </span>
+            </li>
+          );
+        })}
+      </ul>
+    </div>
+  );
+}
+
+// Curved connectors fanning from the bottom-centre of Genie One down to each source tile's top-centre.
+function Connectors({ n }: { n: number }) {
+  return (
+    <svg viewBox="0 0 100 10" preserveAspectRatio="none" className="h-10 w-full" aria-hidden="true">
+      {Array.from({ length: n }, (_, i) => {
+        const cx = ((i + 0.5) / n) * 100;
+        return (
+          <path
+            key={i}
+            d={`M 50 0 C 50 7, ${cx.toString()} 3, ${cx.toString()} 10`}
+            fill="none"
+            stroke="var(--ink-faint)"
+            strokeWidth={1.25}
+            vectorEffect="non-scaling-stroke"
+            opacity={0.65}
+          />
+        );
+      })}
+    </svg>
+  );
+}
+
+// Layered view: Genie One (MCP) is the single context layer; it federates the semantic sources below,
+// with agentic memory persisted in Lakebase. Compact by design — this is the demo's centrepiece.
+function LayeredContextPanel({ c }: { c: Capability }) {
+  const sources = c.contextSources ?? [];
+  return (
+    <div className="space-y-3">
+      <p className="text-sm text-[var(--ink-soft)]">
+        Agents don&apos;t wire to sources. They ask <b className="text-[var(--ink)]">Genie One</b> — the context layer —
+        which federates the sources below and returns permission-aware answers.
+      </p>
+
+      {/* The context layer, its connectors, and the sources it federates */}
+      <div>
+        <div className="flex items-center gap-3 rounded-xl border border-[var(--line)] bg-white p-3">
+          <span className="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-[var(--canvas)] text-[var(--ink-soft)]">
+            <Waypoints className="h-5 w-5" />
+          </span>
+          <div className="min-w-0 flex-1">
+            <div className="flex items-center gap-2">
+              <span className="font-semibold">Genie One</span>
+              <span className="rounded border border-[var(--line)] px-1 font-mono text-[10px] text-[var(--ink-faint)]">
+                MCP
+              </span>
+            </div>
+            <div className="truncate text-xs text-[var(--ink-soft)]">
+              The context layer across agents, cloud &amp; systems · returns only what the person can see
+            </div>
+          </div>
+        </div>
+        <Connectors n={sources.length} />
+        <div className="grid gap-2" style={{ gridTemplateColumns: `repeat(${sources.length.toString()}, minmax(0, 1fr))` }}>
+          {sources.map((s) => (
+            <SourceCard key={s.id} s={s} />
+          ))}
+        </div>
+      </div>
+
+      {/* Memory + request context, side by side and compact */}
+      <div className="grid gap-2 md:grid-cols-2">
+        {c.memory && (
+          <div className="flex items-start gap-2.5 rounded-lg border border-[var(--line)] bg-white p-3">
+            <span className="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-[var(--brand-soft)] text-[var(--brand-strong)]">
+              <Brain className="h-4 w-4" />
+            </span>
+            <div className="min-w-0">
+              <div className="text-sm">
+                <b>Agent memory</b> <span className="text-[var(--ink-faint)]">· {c.memory.store}</span>
+              </div>
+              <p className="text-[13px] leading-snug text-[var(--ink-soft)]">{c.memory.note}</p>
+            </div>
+          </div>
+        )}
+        <div className="rounded-lg border border-[var(--line)] bg-white p-3">
+          <div className="mb-1.5 flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wide text-[var(--ink-faint)]">
+            <MapPin className="h-3.5 w-3.5 text-[var(--brand)]" /> From the request
+          </div>
+          <div className="flex flex-wrap gap-1.5">
+            {c.context.map((x) => (
+              <span key={x.key} className="rounded-md bg-[var(--canvas)] px-2 py-0.5 text-[12px] text-[var(--ink-soft)]">
+                <span className="text-[var(--ink-faint)]">{x.key}</span> {x.value}
+              </span>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Genie Ontology rules — compact, no scores or badges */}
+      {c.ontology.length > 0 && (
+        <div className="rounded-lg bg-[var(--canvas)] px-3 py-2.5">
+          <div className="mb-1 text-[11px] font-semibold uppercase tracking-wide text-[var(--ink-faint)]">
+            Rules Genie One applies
+          </div>
+          <ul className="space-y-1">
+            {c.ontology.slice(0, 2).map((o) => (
+              <li key={o.text} className="flex gap-2 text-[13px] text-[var(--ink-soft)]">
+                <BadgeCheck className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[var(--ok)]" />
+                <span>{o.text}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function ContextPanel({ c }: { c: Capability }) {
+  if (c.contextSources && c.contextSources.length > 0) return <LayeredContextPanel c={c} />;
+  return <SimpleContextPanel c={c} />;
 }
 
 function ControlsPanel({ c }: { c: Capability }) {
@@ -441,7 +608,14 @@ export function CapabilityDetailPage() {
                 <MapPin className="h-4 w-4 text-[var(--brand)]" />
                 <span className="flex-1">
                   <b>Context:</b> {c.context.map((x) => (x.value === 'set per request' ? x.key : x.value)).join(' · ')}{' '}
-                  <span className="text-[var(--ink-faint)]">+ {c.ontology.length} Genie Ontology snippets</span>
+                  {c.contextSources && c.contextSources.length > 0 ? (
+                    <span className="text-[var(--ink-faint)]">
+                      + {c.contextSources.length} sources via Genie One (MCP)
+                      {c.memory ? ' · Lakebase memory' : ''}
+                    </span>
+                  ) : (
+                    <span className="text-[var(--ink-faint)]">+ {c.ontology.length} Genie Ontology snippets</span>
+                  )}
                 </span>
                 <ArrowRight className="h-4 w-4 text-[var(--ink-faint)]" />
               </button>
@@ -474,7 +648,7 @@ export function CapabilityDetailPage() {
                   )}
                 </div>
                 <p className="mt-3 text-xs text-[var(--ink-faint)]">
-                  Assess submission readiness shows the full evaluate → approve → promote flow.
+                  Author a submission dossier shows the full evaluate → approve → promote flow.
                 </p>
               </Panel>
             ))}
@@ -494,7 +668,7 @@ export function CapabilityDetailPage() {
                 [
                   'Agents',
                   pod
-                    ? `${podMemberCount(pod).toString()} (${pod.agentIds.length.toString()} GSK · ${podPlatformAgents(pod).length.toString()} Databricks)`
+                    ? `${podMemberCount(pod).toString()} (${pod.agentIds.length.toString()} Northwind · ${podPlatformAgents(pod).length.toString()} Databricks)`
                     : '—',
                 ],
                 ['Autonomy', pod?.autonomyTier.split(' · ')[0] ?? '—'],
@@ -521,11 +695,10 @@ export function CapabilityDetailPage() {
                 const p = PLATFORM.find((x) => x.id === id);
                 if (!p) return null;
                 return (
-                  <li key={id} className="flex items-center justify-between gap-2 text-sm">
+                  <li key={id} className="text-sm">
                     <span className="truncate" title={p.note}>
                       {p.name}
                     </span>
-                    <MaturityBadge status={p.status} />
                   </li>
                 );
               })}

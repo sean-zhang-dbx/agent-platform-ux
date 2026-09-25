@@ -25,7 +25,7 @@ export const YOU_ROLE = 'RA Lead · Vaccines';
 export const PEOPLE: Person[] = [
   { id: 'you', name: 'You', role: YOU_ROLE, domains: ['rd-reg', 'rd-clin', 'quality'], lacks: ['patient_summary'] },
   { id: 'sean', name: 'Sean', role: 'R&D researcher', domains: ['rd-clin', 'rd-reg'], lacks: ['patient_summary', 'adverse_events', 'ha_letters'], readOnly: true },
-  { id: 'priya', name: 'Priya', role: 'Quality lead · Ware', domains: ['quality', 'mfg', 'supply'], lacks: [] },
+  { id: 'priya', name: 'Priya', role: 'Quality lead · Riverside', domains: ['quality', 'mfg', 'supply'], lacks: [] },
   { id: 'alex', name: 'Alex', role: 'CRO contractor (external)', domains: ['rd-clin'], lacks: ['adverse_events', 'patient_summary', 'protocols', 'site_enrollment'], readOnly: true },
 ];
 
@@ -62,26 +62,26 @@ const cleanRef = (ref: string) => ref.replace(/\s*\(.*?\)/g, '').split(',')[0].t
 // Hand-set tables for the flagship pod so the story reads right.
 const FLAGSHIP_TABLES: Record<string, [string, string, string][]> = {
   clinical: [
-    ['Clinical trials', 'demo.pharma.clinical_trials', 'get_clinical_summary'],
+    ['Clinical trials (locked)', 'demo.pharma.clinical_trials', 'get_clinical_summary'],
     ['Trial endpoints', 'demo.pharma.trial_endpoints', 'Clinical Trials Genie'],
     ['Patient summaries', 'demo.pharma.patient_summary', 'Clinical Trials Genie'],
     ['Adverse events', 'rd_clinical.safety.adverse_events', 'Clinical Trials Genie'],
   ],
   regintel: [
-    ['Regulatory documents (18 PDFs)', 'demo.pharma.regulatory_docs', 'Regulatory Corpus (KA)'],
+    ['Prior submissions & CSRs', 'demo.pharma.regulatory_docs', 'Regulatory Corpus (KA)'],
+    ['HA correspondence & Q&A', 'rd_reg.ops.ha_letters', 'Regulatory Corpus (KA)'],
     ['Submission timelines', 'rd_reg.ops.submission_timelines', 'Regulatory Corpus (KA)'],
-    ['HA correspondence', 'rd_reg.ops.ha_letters', 'Regulatory Corpus (KA)'],
   ],
   quality: [
-    ['Deviations', 'demo.pharma.deviations', 'check_deviation_status'],
-    ['CAPAs', 'demo.pharma.capas', 'Quality Genie'],
-    ['Batch release', 'demo.pharma.batch_release', 'Quality Genie'],
+    ['Approved labelling', 'rd_reg.docs.labels', 'label_text_diff'],
+    ['Trial endpoints (read-only)', 'demo.pharma.trial_endpoints', 'Clinical Trials Genie'],
+    ['Prior CSR text', 'demo.pharma.regulatory_docs', 'Regulatory Corpus (KA)'],
   ],
   drafter: [],
 };
 // Read-only system grants the flagship agents hold beyond the tools the run script shows.
-const FLAGSHIP_SYSTEMS: Record<string, string[]> = { regintel: ['rim-connector'], quality: ['lims-stability'] };
-const FLAGSHIP_TABLE_DOMAIN: Record<string, string> = { clinical: 'rd-clin', regintel: 'rd-reg', quality: 'quality', drafter: 'rd-reg' };
+const FLAGSHIP_SYSTEMS: Record<string, string[]> = { regintel: ['rim-connector'] };
+const FLAGSHIP_TABLE_DOMAIN: Record<string, string> = { clinical: 'rd-clin', regintel: 'rd-reg', quality: 'rd-reg', drafter: 'rd-reg' };
 
 export interface Reach {
   systems: AccessItem[];
@@ -192,15 +192,24 @@ export const riskTier = (actions: AgentAction[]) => Math.max(...actions.map((x) 
 export function stopsAt(a: RoleAgent): string {
   const f = SRP_AGENTS.find((x) => x.id === a.id);
   if (f) return f.cannot[0];
-  return 'Anything that commits GSK needs a named person';
+  return 'Anything that commits Northwind needs a named person';
 }
 
 // ── Identity, ownership, history ───────────────────────────────────────────────
 const FLAGSHIP_VERSION: Record<string, string> = { clinical: '2.1.0', regintel: '1.4.0', quality: '1.2.0', drafter: '3.0.1' };
 export const agentVersion = (a: RoleAgent) => FLAGSHIP_VERSION[a.id] ?? `1.${(hash(a.id) % 6).toString()}.0`;
 export const agentSlug = (a: RoleAgent) => slug(a.name);
-export const entraId = (a: RoleAgent) => `gsk-${agentSlug(a)}`;
-const FLAGSHIP_SPONSOR: Record<string, string> = { clinical: 'Clinical Data Office', regintel: 'Global Regulatory Affairs', quality: 'Quality Assurance', drafter: 'Global Regulatory Affairs' };
+export const entraId = (a: RoleAgent) => `nw-${agentSlug(a)}`;
+const FLAGSHIP_SPONSOR: Record<string, string> = {
+  clinical: 'Clinical Data Office',
+  regintel: 'Global Regulatory Affairs',
+  quality: 'Regulatory Operations',
+  drafter: 'Global Regulatory Affairs',
+  'it-intake': 'IT Service Management',
+  'it-knowledge': 'IT Service Management',
+  'it-automation': 'IT Operations',
+  'it-escalation': 'IT Service Management',
+};
 // An agent's home department can differ from its pod's (the flagship pod staffs agents from three departments).
 export const agentDomain = (a: RoleAgent) => FLAGSHIP_TABLE_DOMAIN[a.id] ?? a.domainId;
 export const sponsorOf = (a: RoleAgent) => FLAGSHIP_SPONSOR[a.id] ?? domainById(a.domainId).owners[0];

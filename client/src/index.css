@@ -1,7 +1,7 @@
 @import "@databricks/appkit-ui/styles.css";
 
 /*
- * GSK-inspired palette (warm orange on white). Colors only, no customer marks.
+ * Northwind-inspired palette (warm orange on white). Colors only, no customer marks.
  * Declared after the appkit-ui import so it wins over its light/dark tokens:
  * this prototype is light-only on purpose.
  */

@@ -1,6 +1,6 @@
 import type { Skill } from './types';
 
-// All synthetic. Names and owners are illustrative, not real GSK assets.
+// All synthetic. Names and owners are illustrative, not real Northwind assets.
 export const SEED_SKILLS: Skill[] = [
   {
     id: 'clinical-summary-authoring',
@@ -160,7 +160,7 @@ export const SEED_SKILLS: Skill[] = [
     status: 'Certified',
     version: 'v1.0',
     ucPath: 'rd.regulatory.save_report_draft',
-    description: 'Writes a draft readiness report to the work plane. Marked as a write, so it always waits for human approval.',
+    description: 'Writes a draft document (report or dossier section) to the work plane. Marked as a write, so it always waits for human approval.',
     inputs: 'request_id: STRING, report_md: STRING',
     outputs: 'draft_id: STRING',
     lastUsed: '2 min ago',
@@ -249,9 +249,9 @@ export const SEED_SKILLS: Skill[] = [
 ];
 
 export const AUDIT_ACTORS = [
-  'sp-rd-clin-7f3a (Clinical Data Agent)',
-  'sp-rd-reg-19c2 (Regulatory Intel Agent)',
-  'sp-qa-rev-5b81 (Quality Review Agent)',
-  'sean.zhang (via Genie One)',
-  'sp-rd-draft-a44e (Report Drafter)',
+  'sp-rd-clin-7f3a (CSR Author Agent)',
+  'sp-rd-reg-19c2 (HA-Response Agent)',
+  'sp-qa-rev-5b81 (QC & Consistency Agent)',
+  'ra.lead (via Genie One)',
+  'sp-rd-draft-a44e (eCTD Assembler)',
 ];

@@ -78,7 +78,7 @@ export function AgentDrawer({ agentId, onClose }: { agentId: string | null; onCl
   );
 }
 
-const BUILT_TONE = { GSK: 'brand', Databricks: 'info', External: 'neutral' } as const;
+const BUILT_TONE = { Northwind: 'brand', Databricks: 'info', External: 'neutral' } as const;
 
 export function AgentsPage() {
   const { domain, state } = useStore();
@@ -125,7 +125,7 @@ export function AgentsPage() {
 
   return (
     <div>
-      <PageHeader title="Agents" sub="One kind of agent. GSK-built agents get their know-how from skills; Databricks agents come ready-made." />
+      <PageHeader title="Agents" sub="One kind of agent. Northwind-built agents get their know-how from skills; Databricks agents come ready-made." />
       <DataTable
         rows={rows}
         columns={columns}
@@ -141,7 +141,7 @@ export function AgentsPage() {
             onChange={setBuilt}
             options={[
               ['all', 'Built by anyone'],
-              ['GSK', `GSK (${counts('GSK').toString()})`],
+              ['Northwind', `Northwind (${counts('Northwind').toString()})`],
               ['Databricks', `Databricks (${counts('Databricks').toString()})`],
               ['External', `External (${counts('External').toString()})`],
             ]}

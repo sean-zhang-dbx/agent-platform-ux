@@ -3,9 +3,12 @@ import { ArrowRight, CircleCheck, OctagonAlert, TriangleAlert } from 'lucide-rea
 import { useStore } from '../../state/store';
 import { capabilityById } from '../../data/estate';
 import { reportFor } from '../../data/genericRun';
-import { FLAGSHIP } from '../../data/capabilities';
+import { FLAGSHIP, SRA_ID } from '../../data/capabilities';
+import { gatesForPod } from '../../data/pods';
 import type { WorkRequest } from '../../data/types';
 import { Chip, PrimaryButton, SecondaryButton } from '../../components/ui';
+import { ApprovalsRegister } from '../../components/Approvals';
+import { DossierButton } from '../../components/DossierPreview';
 import { cx } from '../../lib/format';
 
 export function ReportCard({ r }: { r: WorkRequest }) {
@@ -14,6 +17,7 @@ export function ReportCard({ r }: { r: WorkRequest }) {
   const rep = reportFor(capabilityById(r.capabilityId) ?? FLAGSHIP);
   const blocking = rep.flags.filter((f) => f.level === 'blocking');
   const others = rep.flags.filter((f) => f.level !== 'blocking');
+  const gates = gatesForPod(r.podId);
 
   return (
     <div className={cx('rounded-2xl border bg-white p-4', open ? 'border-2 border-[var(--brand)] shadow-sm' : 'border-[var(--line)]')}>
@@ -27,6 +31,12 @@ export function ReportCard({ r }: { r: WorkRequest }) {
       </div>
 
       <div className="mt-3 text-3xl font-bold tracking-tight text-[var(--warn)]">{rep.recommendation}</div>
+
+      {r.capabilityId === SRA_ID && (
+        <div className="mt-3">
+          <DossierButton />
+        </div>
+      )}
 
       {blocking.map((f) => (
         <div key={f.text} className="mt-2 flex gap-2 rounded-lg bg-[var(--deny-soft)] px-3 py-2 text-sm font-medium">
@@ -44,13 +54,18 @@ export function ReportCard({ r }: { r: WorkRequest }) {
         </ul>
       </details>
 
-      {open && (
-        <div className="mt-4 flex flex-wrap justify-end gap-2">
-          <SecondaryButton onClick={() => decide(r.id, 'rejected', '')}>Reject</SecondaryButton>
-          <SecondaryButton onClick={() => decide(r.id, 'changes_requested', '')}>Request changes</SecondaryButton>
-          <PrimaryButton onClick={() => decide(r.id, 'approved', '')}>Approve &amp; sign</PrimaryButton>
-        </div>
-      )}
+      {open &&
+        (gates.length > 0 ? (
+          <div className="mt-4">
+            <ApprovalsRegister r={r} gates={gates} />
+          </div>
+        ) : (
+          <div className="mt-4 flex flex-wrap justify-end gap-2">
+            <SecondaryButton onClick={() => decide(r.id, 'rejected', '')}>Reject</SecondaryButton>
+            <SecondaryButton onClick={() => decide(r.id, 'changes_requested', '')}>Request changes</SecondaryButton>
+            <PrimaryButton onClick={() => decide(r.id, 'approved', '')}>Approve &amp; sign</PrimaryButton>
+          </div>
+        ))}
     </div>
   );
 }

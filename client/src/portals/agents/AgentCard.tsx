@@ -120,7 +120,7 @@ export function AgentCard({ agent, person, onPerson, run }: { agent: RoleAgent; 
           <div className="truncate font-semibold">{agent.name}</div>
           {purpose && <div className="text-xs text-[#e8ddd4]">{purpose}</div>}
           <div className="truncate text-xs text-[#cbbfb6]">
-            v{agentVersion(agent)} · built by GSK ·{' '}
+            v{agentVersion(agent)} · built by Northwind ·{' '}
             <Link to={`/pods/${agent.podId}`} className="hover:underline">
               {pod?.name}
             </Link>

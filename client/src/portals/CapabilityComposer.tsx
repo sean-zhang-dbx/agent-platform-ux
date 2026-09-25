@@ -14,9 +14,9 @@ import { capabilityManifest, parseCapabilityYaml } from '../data/manifest';
 
 const STEPS = [
   { key: 'skills', label: 'Skills', hint: 'How the work is done', color: KIT_COLOR.skill },
-  { key: 'tools', label: 'Tools', hint: 'How it acts on GSK systems', color: KIT_COLOR.tool },
+  { key: 'tools', label: 'Tools', hint: 'How it acts on Northwind systems', color: KIT_COLOR.tool },
   { key: 'data', label: 'Data', hint: 'The evidence it relies on', color: KIT_COLOR.data },
-  { key: 'context', label: 'Context', hint: 'The situation, plus what GSK means by its words', color: 'var(--brand)' },
+  { key: 'context', label: 'Context', hint: 'The situation, plus what Northwind means by its words', color: 'var(--brand)' },
 ] as const;
 type StepKey = (typeof STEPS)[number]['key'];
 

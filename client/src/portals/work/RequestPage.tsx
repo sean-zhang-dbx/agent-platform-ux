@@ -1,17 +1,20 @@
 import { useState } from 'react';
 import { Link, useParams } from 'react-router';
-import { Ban, CircleCheck, OctagonAlert, PenLine, ShieldCheck, TriangleAlert } from 'lucide-react';
+import { Ban, CircleCheck, LoaderCircle, OctagonAlert, PenLine, ShieldCheck, TriangleAlert } from 'lucide-react';
 import { useStore } from '../../state/store';
-import { SRP_AGENTS } from '../../data/pods';
+import { SRP_AGENTS, gatesForPod } from '../../data/pods';
 import { SRA_ID, FLAGSHIP } from '../../data/capabilities';
 import { capabilityById, podById, roleAgentById } from '../../data/estate';
 import { reportFor } from '../../data/genericRun';
 import { AGENT_FINDINGS, CITATIONS, EVIDENCE_ROWS, REPORT } from '../../data/report';
 import type { WorkRequest } from '../../data/types';
 import { Chip, Panel, PrimaryButton, SecondaryButton, Stat } from '../../components/ui';
+import { ApprovalsRegister } from '../../components/Approvals';
+import { DossierButton } from '../../components/DossierPreview';
 import { cx, money } from '../../lib/format';
 import { statusLabel } from '../Work';
 import { ActivityList, RunCard, agentLabel } from '../chat/RunCard';
+import { PodCard } from '../chat/PodCard';
 import { AgentCard, RunAccessSummary } from '../agents/AgentCard';
 import { personFor } from '../../data/access';
 
@@ -33,6 +36,17 @@ function SignOff({ r }: { r: WorkRequest }) {
   const { decide } = useStore();
   const [comment, setComment] = useState('');
   const d = r.decision;
+  const gates = gatesForPod(r.podId);
+  if (!d && r.status === 'pending_approval' && gates.length > 0) {
+    return (
+      <Panel className="border-2 border-[var(--brand)] p-5">
+        <div className="mb-3 flex items-center gap-2 font-semibold">
+          <PenLine className="h-5 w-5 text-[var(--brand)]" /> Sign-off
+        </div>
+        <ApprovalsRegister r={r} gates={gates} />
+      </Panel>
+    );
+  }
   return (
     <Panel className={cx('p-5', !d && 'border-2 border-[var(--brand)]')}>
       <div className="flex items-center gap-2 font-semibold">
@@ -72,8 +86,13 @@ function ReportTab({ r }: { r: WorkRequest }) {
   return (
     <div className="grid gap-5 lg:grid-cols-[minmax(0,1.7fr)_minmax(0,1fr)]">
       <Panel className="p-6">
-        <div className="text-xs text-[var(--ink-faint)]">Draft · drafted by Report Drafter · not signed</div>
-        <div className="mt-1 text-3xl font-bold tracking-tight text-[var(--warn)]">{rep.recommendation}</div>
+        <div className="flex flex-wrap items-start justify-between gap-2">
+          <div>
+            <div className="text-xs text-[var(--ink-faint)]">Draft · written by the pod · not signed</div>
+            <div className="mt-1 text-3xl font-bold tracking-tight text-[var(--warn)]">{rep.recommendation}</div>
+          </div>
+          {flagship && <DossierButton />}
+        </div>
         <div className="mt-1 text-sm text-[var(--ink-soft)]">{rep.detail}</div>
 
         <div className="mt-4 space-y-2">
@@ -176,7 +195,7 @@ function EvidenceTab({ r }: { r: WorkRequest }) {
           <div className="mb-2 font-semibold">Governance events</div>
           <ul className="space-y-1.5 text-sm">
             <li className="flex gap-2">
-              <Ban className="mt-0.5 h-4 w-4 shrink-0 text-[var(--deny)]" /> Denied read on batch_genealogy · logged · rerouted
+              <Ban className="mt-0.5 h-4 w-4 shrink-0 text-[var(--deny)]" /> Denied read on patient_summary · logged · rerouted
             </li>
             <li className="flex gap-2">
               <TriangleAlert className="mt-0.5 h-4 w-4 shrink-0 text-[var(--warn)]" /> 1 model timeout · retried
@@ -299,12 +318,14 @@ export function RequestPage() {
       ) : !hasReport ? (
         r.status === 'in_progress' ? (
           <RunCard r={r} />
+        ) : r.status === 'pod_review' ? (
+          <div className="space-y-2">
+            <p className="text-sm text-[var(--ink-soft)]">A pod has been drafted for this run. Nothing runs until you approve it.</p>
+            <PodCard r={r} />
+          </div>
         ) : (
-          <Panel className="p-8 text-center text-sm text-[var(--ink-soft)]">
-            The pod is being drafted.{' '}
-            <Link to="/" className="font-medium text-[var(--brand-strong)] hover:underline">
-              Review it in Chat
-            </Link>
+          <Panel className="flex items-center justify-center gap-2 p-10 text-sm text-[var(--ink-soft)]">
+            <LoaderCircle className="h-4 w-4 animate-spin text-[var(--brand)]" /> Drafting the pod…
           </Panel>
         )
       ) : (

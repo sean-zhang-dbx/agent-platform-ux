@@ -1,4 +1,4 @@
-// Improvement lifecycle for the Submission Readiness Pod. A running pod stays on its approved
+// Improvement lifecycle for the Submission Dossier Pod. A running pod stays on its approved
 // version; candidates are built from traces and reviewer corrections, then evaluated offline.
 
 export type VersionId = 'v1.3' | 'v1.4';
@@ -6,8 +6,8 @@ export type VersionId = 'v1.3' | 'v1.4';
 export const LIFECYCLE = ['Feedback', 'Candidate', 'Evaluate', 'Approve', 'Live'];
 
 export const CANDIDATE_CHANGES = [
-  { area: 'Skill', text: 'Quality Gate Assessment: labelling deviations are non-blocking' },
-  { area: 'Context', text: 'Pass only cited evidence to the Report Drafter' },
+  { area: 'Skill', text: 'CSR Section Authoring: pull efficacy figures only from locked endpoint rows' },
+  { area: 'Context', text: 'Reuse the matched prior HA answer before drafting a new one' },
 ];
 
 export interface Metric {

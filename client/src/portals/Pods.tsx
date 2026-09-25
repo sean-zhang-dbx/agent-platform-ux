@@ -1,16 +1,20 @@
 import { useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate, useParams, useSearchParams } from 'react-router';
-import { MessageSquare, Play, Search } from 'lucide-react';
+import { MessageSquare, Play, Search, ShieldCheck } from 'lucide-react';
 import { useStore } from '../state/store';
-import { SRP_ID } from '../data/pods';
+import { ITSP_ID, SRP_ID, gatesForPod } from '../data/pods';
+import { isOperationalPod } from '../data/itservice';
 import { CAPABILITIES, POD_LIST, WORK_ITEMS, podById, podMemberCount, podPlatformAgents, roleAgentById, type PodDef, type RoleAgent } from '../data/estate';
 import { Chip, PageHeader, Panel, PrimaryButton, SecondaryButton } from '../components/ui';
+import { PodAccountability } from '../components/Approvals';
+import { OperatingModel, OpsConsole } from '../components/OperatingModel';
+import { LiveOpsButton } from '../components/LiveOps';
 import { FilterSelect } from '../components/DataTable';
 import { SectionTitle } from '../components/bits';
 import { ManifestPanel } from '../components/Manifest';
 import { podManifest } from '../data/manifest';
 import { money } from '../lib/format';
-import { PodKitDiagram } from '../viz/PodKitDiagram';
+import { PodFlow } from '../viz/PodFlow';
 import { PodThumb } from '../viz/PodThumb';
 import type { Kit } from '../viz/palette';
 import { PodVersions } from './agents/PodVersions';
@@ -34,9 +38,15 @@ export function PodsPage() {
   const navigate = useNavigate();
   const [query, setQuery] = useState('');
   const [status, setStatus] = useState('all');
+  // Lead with the two hero pods; everything else keeps its existing order.
+  const HERO_FIRST = [SRP_ID, ITSP_ID];
+  const heroRank = (id: string) => {
+    const i = HERO_FIRST.indexOf(id);
+    return i === -1 ? HERO_FIRST.length : i;
+  };
   const pods = POD_LIST.filter(
     (p) => (domain === 'all' || p.domainId === domain) && (status === 'all' || p.status === status) && `${p.name} ${p.domain} ${p.summary}`.toLowerCase().includes(query.toLowerCase()),
-  );
+  ).sort((a, b) => heroRank(a.id) - heroRank(b.id));
   return (
     <div>
       <PageHeader title="Pods" sub="Teams of agents, each serving one or more capabilities." />
@@ -81,7 +91,7 @@ export function PodsPage() {
 
 export function PodDetailPage() {
   const { podId } = useParams();
-  const { state } = useStore();
+  const { state, submitRequest } = useStore();
   const { hash } = useLocation();
   const navigate = useNavigate();
   const [params, setParams] = useSearchParams();
@@ -111,26 +121,35 @@ export function PodDetailPage() {
         title={pod.name}
         sub={`${pod.owner} · ${pod.domain}`}
         right={
-          <div className="flex gap-2">
-            {pod.id === 'trial-feasibility' && (
-              <PrimaryButton onClick={() => void navigate('/feasibility')}>
-                <Play className="h-4 w-4" /> Run live workflow
-              </PrimaryButton>
-            )}
-            {caps[0] && (
+          caps[0] && (
+            <div className="flex gap-2">
               <SecondaryButton onClick={() => void navigate(`/ask?cap=${caps[0].id}`)}>
-                <MessageSquare className="h-4 w-4" /> Use in Ask
+                <MessageSquare className="h-4 w-4" /> {isOperationalPod(pod.id) ? 'Trace one ticket' : 'Use in Ask'}
               </SecondaryButton>
-            )}
-          </div>
+              {isOperationalPod(pod.id) ? (
+                <LiveOpsButton />
+              ) : (
+                <PrimaryButton
+                  onClick={() => {
+                    const rid = submitRequest(caps[0].sampleRequest, caps[0].id);
+                    void navigate(`/work/${rid}`);
+                  }}
+                  disabled={pod.status !== 'Active'}
+                >
+                  <Play className="h-4 w-4" /> Run pod
+                </PrimaryButton>
+              )}
+            </div>
+          )
         }
       />
       <div className="-mt-3 mb-5 flex flex-wrap items-center gap-2">
         <StatusChip status={pod.status} />
+        {isOperationalPod(pod.id) && <Chip tone="ok">● Running continuously</Chip>}
         <Chip tone="brand">{flagship ? state.liveVersion : pod.version} live</Chip>
         <Chip>{pod.autonomyTier}</Chip>
         <Chip>
-          {podMemberCount(pod)} agents · {pod.agentIds.length} GSK-built · {podPlatformAgents(pod).length} Databricks
+          {podMemberCount(pod)} agents · {pod.agentIds.length} Northwind-built · {podPlatformAgents(pod).length} Databricks
         </Chip>
         <Chip>
           {pod.runsThisMonth.toLocaleString()} runs · {money(pod.cost30d)} · 30d
@@ -149,8 +168,28 @@ export function PodDetailPage() {
       </Panel>
 
       <Panel className="mb-5 p-5">
-        <PodKitDiagram agents={agentsOf(pod)} platform={podPlatformAgents(pod)} onPick={(id) => setParams({ agent: id })} />
+        <PodFlow pod={pod} agents={agentsOf(pod)} onPick={(id) => setParams({ agent: id })} />
       </Panel>
+
+      {gatesForPod(pod.id).length > 0 && (
+        <Panel className="mb-5 p-5">
+          <SectionTitle right={<Chip tone="warn"><ShieldCheck className="h-3 w-3" /> GxP</Chip>}>Accountability &amp; sign-off</SectionTitle>
+          <PodAccountability gates={gatesForPod(pod.id)} />
+        </Panel>
+      )}
+
+      {isOperationalPod(pod.id) && (
+        <>
+          <Panel className="mb-5 p-5">
+            <SectionTitle right={<Chip tone="ok">● Continuous</Chip>}>Operating model</SectionTitle>
+            <OperatingModel />
+          </Panel>
+          <Panel className="mb-5 p-5">
+            <SectionTitle>Live operations</SectionTitle>
+            <OpsConsole />
+          </Panel>
+        </>
+      )}
 
       {flagship ? (
         <PodVersions />
@@ -159,7 +198,7 @@ export function PodDetailPage() {
           <SectionTitle>Versions</SectionTitle>
           <div className="flex flex-wrap items-center gap-3 text-sm">
             <Chip tone="ok">{pod.version} live</Chip>
-            <span className="text-[var(--ink-soft)]">Corrections from sign-off feed the next candidate. See Submission Readiness Pod for the full promote flow.</span>
+            <span className="text-[var(--ink-soft)]">Corrections from sign-off feed the next candidate. See Submission Dossier Pod for the full promote flow.</span>
           </div>
         </Panel>
       )}

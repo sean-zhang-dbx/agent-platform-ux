@@ -1,7 +1,7 @@
 // Simulated enterprise estate. Deterministic (seeded) so every load looks the same.
 // The Submission Readiness flagship keeps its hand-written ids and data; everything else is generated.
-import { FLAGSHIP, SRA_ID, type Capability, type OntologySnippet } from './capabilities';
-import { PODS as SEED_PODS, SRP_AGENTS, SRP_ID } from './pods';
+import { FLAGSHIP, ITSM_CAP, ITSM_ID, SRA_ID, type Capability, type ContextSource, type OntologySnippet } from './capabilities';
+import { PODS as SEED_PODS, ITSP_AGENTS, ITSP_ID, SRP_AGENTS, SRP_ID } from './pods';
 import { SEED_SKILLS } from './skills';
 import type { GxpTier, Pod, Skill, SkillStatus, SkillType } from './types';
 
@@ -32,13 +32,17 @@ export function slug(s: string): string {
 export type Maturity = 'GA' | 'Public Preview' | 'Beta';
 export const PLATFORM: { id: string; name: string; status: Maturity; note: string }[] = [
   { id: 'uc-skills', name: 'Unity Catalog Skills', status: 'Beta', note: 'Governed SKILL.md as a UC securable' },
+  { id: 'genie-one-mcp', name: 'Genie One (MCP)', status: 'Public Preview', note: 'The context layer across agents, cloud and systems' },
   { id: 'genie-ontology', name: 'Genie Ontology', status: 'Public Preview', note: 'Context layer for Genie One and Genie Code' },
+  { id: 'glean-connection', name: 'Glean (via UC connection)', status: 'Public Preview', note: 'Collaboration semantics: Confluence and SharePoint knowledge & context graph' },
+  { id: 'stardog-kg', name: 'Stardog knowledge graph', status: 'Beta', note: 'Regulated semantics: harmonized, connected data models' },
+  { id: 'lakebase-memory', name: 'Lakebase (Serverless Postgres)', status: 'Public Preview', note: 'Agentic memory persisted across runs' },
   { id: 'genie-agents', name: 'Genie Agents', status: 'GA', note: 'Natural-language agents over UC data' },
   { id: 'knowledge-assistant', name: 'Knowledge Assistant', status: 'GA', note: 'Cited answers over documents' },
   { id: 'uc-functions', name: 'Unity Catalog functions', status: 'GA', note: 'Governed tool calls' },
   { id: 'mcp-services', name: 'MCP services + ABAC grants', status: 'Beta', note: 'Governed access to external systems' },
   { id: 'external-agents', name: 'External agents via UC connection', status: 'Public Preview', note: 'e.g. Vertex AI agents on GCP' },
-  { id: 'appkit-agents', name: 'AppKit agents plugin', status: 'Beta', note: 'Runtime for GSK-built agents in a Databricks App' },
+  { id: 'appkit-agents', name: 'AppKit agents plugin', status: 'Beta', note: 'Runtime for Northwind-built agents in a Databricks App' },
   { id: 'ai-gateway', name: 'AI Gateway budgets & routing', status: 'GA', note: 'Spend caps, attribution, routing' },
   { id: 'mlflow-tracing', name: 'MLflow tracing', status: 'GA', note: 'End-to-end traces' },
   { id: 'prod-monitoring', name: 'MLflow production monitoring', status: 'Beta', note: 'Scheduled scorers on live traces' },
@@ -83,9 +87,9 @@ const SEEDS: DomainSeed[] = [
     id: 'rd-reg', name: 'R&D Regulatory', short: 'Regulatory', bu: 'R&D', gxp: true, tier: 'Tier 2',
     owners: ['Global Regulatory Affairs', 'Regulatory Operations'],
     context: ['Product', 'Region', 'Procedure', 'User'],
-    caps: [[SRA_ID, 'Assess submission readiness'], ['answer-ha-query', 'Answer a health-authority query'], ['build-submission-plan', 'Build a submission plan'], ['track-reg-commitments', 'Track regulatory commitments'], ['compare-label-versions', 'Compare label versions']],
+    caps: [[SRA_ID, 'Author a submission dossier'], ['answer-ha-query', 'Answer a health-authority query'], ['build-submission-plan', 'Build a submission plan'], ['track-reg-commitments', 'Track regulatory commitments'], ['compare-label-versions', 'Compare label versions']],
     capPod: [0, 1, 2, 3, 3],
-    pods: [[SRP_ID, 'Submission Readiness Pod'], ['ha-response', 'HA Response Pod'], ['submission-planning', 'Submission Planning Pod'], ['label-commitments', 'Label & Commitments Pod']],
+    pods: [[SRP_ID, 'Submission Dossier Pod'], ['ha-response', 'HA Response Pod'], ['submission-planning', 'Submission Planning Pod'], ['label-commitments', 'Label & Commitments Pod']],
     skills: ['Regulatory Precedent Analysis', 'Submission Readiness Report', 'HA Query Response Drafting', 'Health Authority Tone Guide', 'Submission Planning Rules', 'eCTD Module Mapping', 'Commitment Tracking', 'Regional Requirements', 'Label Change Assessment', 'Labeling Consistency Check', 'Dossier Gap Analysis', 'Briefing Book Authoring'],
     tools: [['save_report_draft', 'UC Function', 'Databricks'], ['RIM Connector', 'MCP Service', 'SaaS · Veeva'], ['get_submission_timeline', 'UC Function', 'Databricks'], ['label_text_diff', 'UC Function', 'Databricks'], ['HA Correspondence', 'MCP Service', 'SaaS · Veeva'], ['eCTD Viewer', 'MCP Service', 'Azure']],
     platformAgents: [['Regulatory Document Corpus', 'Knowledge Assistant', 'Databricks'], ['Regulatory Intelligence Genie', 'Genie Agent', 'Databricks'], ['Health Authority Guidance', 'Knowledge Assistant', 'Databricks']],
@@ -155,13 +159,13 @@ const SEEDS: DomainSeed[] = [
     id: 'enterprise', name: 'Enterprise Functions', short: 'Enterprise', bu: 'Corporate', gxp: false, tier: 'Tier 3',
     owners: ['Enterprise Quality Systems', 'Finance Ops', 'IT Service Management', 'People & HR'],
     context: ['Function', 'Country', 'Policy', 'User'],
-    caps: [['answer-sop-question', 'Answer an SOP question'], ['onboard-new-hire', 'Onboard a new hire'], ['reconcile-finance-close', 'Reconcile a finance close'], ['triage-it-incident', 'Triage an IT incident'], ['review-contract-clause', 'Review a contract clause']],
+    caps: [['answer-sop-question', 'Answer an SOP question'], ['onboard-new-hire', 'Onboard a new hire'], ['reconcile-finance-close', 'Reconcile a finance close'], ['triage-it-incident', 'Resolve or route an IT incident'], ['review-contract-clause', 'Review a contract clause']],
     capPod: [0, 0, 1, 2, 3],
-    pods: [['business-companion', 'Business Companion Pod'], ['finance-close', 'Finance Close Pod'], ['it-service', 'IT Service Pod'], ['contracts', 'Contracts Pod']],
-    skills: ['SOP Answering', 'Policy Change Summary', 'Onboarding Plan', 'Training Assignment', 'Finance Close Reconciliation', 'Expense Audit Rules', 'IT Incident Triage', 'Access Request Review', 'Contract Clause Review', 'Vendor Onboarding', 'Travel Policy Guidance', 'Records Retention Rules'],
-    tools: [['Workday Connector', 'MCP Service', 'SaaS · Workday'], ['ServiceNow', 'MCP Service', 'SaaS · ServiceNow'], ['get_gl_balances', 'UC Function', 'Databricks'], ['S/4 Finance', 'MCP Service', 'SaaS · SAP'], ['Contract Repository', 'MCP Service', 'Azure'], ['create_it_ticket', 'UC Function', 'Databricks']],
-    platformAgents: [['SOP & Policy Library', 'Knowledge Assistant', 'Databricks'], ['Finance Genie', 'Genie Agent', 'Databricks'], ['HR Policy Genie', 'Genie Agent', 'Databricks']],
-    data: [['SOP library', 'corp.policy.sop_library (volume)'], ['GL balances', 'corp.finance.gl_balances'], ['IT incidents', 'corp.it.incidents'], ['Contracts', 'corp.legal.contracts (volume)']],
+    pods: [['business-companion', 'Business Companion Pod'], ['finance-close', 'Finance Close Pod'], ['it-service', 'IT Service Desk Pod'], ['contracts', 'Contracts Pod']],
+    skills: ['SOP Answering', 'Policy Change Summary', 'Onboarding Plan', 'Training Assignment', 'Finance Close Reconciliation', 'Expense Audit Rules', 'Incident Triage & Classification', 'Knowledge Resolution', 'Runbook Automation', 'Escalation Decision', 'Contract Clause Review', 'Records Retention Rules'],
+    tools: [['Workday Connector', 'MCP Service', 'SaaS · Workday'], ['ServiceNow', 'MCP Service', 'SaaS · ServiceNow'], ['get_gl_balances', 'UC Function', 'Databricks'], ['S/4 Finance', 'MCP Service', 'SaaS · SAP'], ['Contract Repository', 'MCP Service', 'Azure'], ['get_cmdb_ci', 'MCP Service', 'SaaS · ServiceNow'], ['run_runbook', 'UC Function', 'Databricks']],
+    platformAgents: [['SOP & Policy Library', 'Knowledge Assistant', 'Databricks'], ['IT Knowledge Base', 'Knowledge Assistant', 'Databricks'], ['Finance Genie', 'Genie Agent', 'Databricks']],
+    data: [['SOP library', 'corp.policy.sop_library (volume)'], ['GL balances', 'corp.finance.gl_balances'], ['IT incidents', 'corp.it.incidents'], ['CMDB configuration items', 'corp.it.cmdb_ci'], ['Contracts', 'corp.legal.contracts (volume)']],
   },
 ];
 
@@ -193,7 +197,7 @@ function describe(name: string, type: SkillType): string {
   const n = name.replace(/\s*\(.*?\)/g, '');
   switch (type) {
     case 'UC Skill':
-      return `How to apply ${n.toLowerCase()} the GSK way: steps, rules, and what must be flagged for a person.`;
+      return `How to apply ${n.toLowerCase()} the Northwind way: steps, rules, and what must be flagged for a person.`;
     case 'UC Function':
       return `Governed function ${n}. Returns only what the caller is granted to see.`;
     case 'MCP Service':
@@ -321,6 +325,10 @@ for (const seed of SEEDS) {
       capabilities.push(FLAGSHIP);
       return;
     }
+    if (id === ITSM_ID) {
+      capabilities.push(ITSM_CAP);
+      return;
+    }
     const capSkills = [skills[(i * 2) % skills.length], skills[(i * 2 + 1) % skills.length]];
     if (rnd() < 0.5) capSkills.push(skills[10 + (i % 2)]);
     const capTools = [tools[i % tools.length]];
@@ -378,7 +386,7 @@ for (const seed of SEEDS) {
     });
   });
 
-  // GSK-built agents: one per skill used by the pod's capabilities, plus a drafter.
+  // Northwind-built agents: one per skill used by the pod's capabilities, plus a drafter.
   for (const pod of domainPods) {
     if (pod.id === SRP_ID) {
       for (const a of SRP_AGENTS) {
@@ -388,6 +396,21 @@ for (const seed of SEEDS) {
       pod.agentNames = SRP_AGENTS.map((a) => a.name);
       pod.runsThisMonth = 37;
       pod.cost30d = 37 * pod.avgCostPerRun;
+      continue;
+    }
+    if (pod.id === ITSP_ID) {
+      pod.owner = 'IT Service Management';
+      pod.avgCostPerRun = 0.04;
+      pod.autonomyTier = 'Tier 2 · human-on-the-loop';
+      pod.lastRun = '2 min ago';
+      for (const a of ITSP_AGENTS) {
+        roleAgents.push({ id: a.id, name: a.name, podId: ITSP_ID, domainId: d.id, skills: a.skills, tools: a.tools, calls: a.calls, servicePrincipal: a.servicePrincipal, model: a.model, runs30d: 4218 });
+        pod.agentIds.push(a.id);
+      }
+      pod.agentNames = ITSP_AGENTS.map((a) => a.name);
+      pod.runsThisMonth = 4218;
+      pod.cost30d = Math.round(4218 * pod.avgCostPerRun);
+      pod.summary = 'Continuously triages the IT ticket queue: resolves the safe, known fixes and escalates the rest to the right team.';
       continue;
     }
     const caps = capabilities.filter((c) => pod.capabilityIds.includes(c.id));
@@ -442,6 +465,112 @@ for (const c of capabilities) {
   if (called.some((s) => s?.runsOn?.startsWith('GCP')) && !c.deps.includes('external-agents')) c.deps.push('external-agents');
 }
 
+// Post-pass: context is federated through Genie One (MCP), the single context layer. Which semantic
+// sources feed it depends on the capability:
+//   • Glean (collaboration) — every capability; docs and people live in Confluence / SharePoint.
+//   • Genie Ontology (lakehouse) — only when the capability reads lakehouse tables, not just documents.
+//   • Stardog (regulated) — only R&D capabilities, where connected regulated models matter.
+// Agentic memory is persisted in Lakebase for every capability.
+function assignContext(c: Capability): void {
+  const d = domainById(c.domainId);
+  const tables = c.data.map((x) => x.ref.split(/[,(]/)[0].trim()).filter((r) => !/volume/i.test(r) && r.includes('.'));
+  const sources: ContextSource[] = [];
+  if (tables.length > 0) {
+    sources.push({
+      id: 'genie-ontology',
+      lane: 'Lakehouse',
+      name: 'Genie Ontology',
+      items: [
+        ...tables.slice(0, 2).map((t) => ({ name: t, via: 'table' })),
+        { name: `${d.id.replace('-', '_')}.semantic.${d.short.toLowerCase()}_metrics`, via: 'metric view' },
+      ],
+    });
+  }
+  sources.push({
+    id: 'glean',
+    lane: 'Collaboration',
+    name: 'Glean',
+    items: [
+      { name: `${d.short} team space`, via: 'Confluence' },
+      { name: `${d.short} Operations`, via: 'SharePoint' },
+    ],
+  });
+  if (d.bu === 'R&D') {
+    sources.push({
+      id: 'stardog',
+      lane: 'Regulated',
+      name: 'Stardog',
+      items: [
+        { name: `${d.short} knowledge graph`, via: 'graph' },
+        { name: 'Study, role & document model', via: 'graph' },
+      ],
+    });
+  }
+  c.contextSources = sources;
+  c.memory = { store: 'Lakebase', note: 'Remembers what is done and the corrections a person made, so the next run starts ahead.' };
+  for (const dep of ['genie-one-mcp', 'lakebase-memory', 'glean-connection']) {
+    if (!c.deps.includes(dep)) c.deps.push(dep);
+  }
+  if (tables.length > 0 && !c.deps.includes('genie-ontology')) c.deps.push('genie-ontology');
+  if (d.bu === 'R&D' && !c.deps.includes('stardog-kg')) c.deps.push('stardog-kg');
+}
+for (const c of capabilities) assignContext(c);
+
+// "Onboard a new hire" is the worked example — hand-authored so the copy is concrete. Enterprise, not
+// R&D, so no Stardog: just Glean everywhere + Genie Ontology for the lakehouse tables it reads.
+const onboarding = capabilities.find((c) => c.id === 'onboard-new-hire');
+if (onboarding) {
+  onboarding.owner = 'People & HR · IT Service Management';
+  onboarding.context = [
+    { key: 'New hire', value: 'Data Scientist · R&D' },
+    { key: 'Hiring manager', value: 'Head of Computational Biology' },
+    { key: 'Location', value: 'Stevenage, UK' },
+    { key: 'Start date', value: 'in 9 days' },
+  ];
+  onboarding.contextSources = [
+    {
+      id: 'genie-ontology',
+      lane: 'Lakehouse',
+      name: 'Genie Ontology',
+      items: [
+        { name: 'workday.hr.workers', via: 'table' },
+        { name: 'corp.iam.role_model', via: 'table' },
+        { name: 'corp.iam.entitlement_sets', via: 'table' },
+      ],
+    },
+    {
+      id: 'glean',
+      lane: 'Collaboration',
+      name: 'Glean',
+      items: [
+        { name: 'R&D new-joiner runbook', via: 'Confluence' },
+        { name: 'IT setup guide', via: 'Confluence' },
+        { name: 'HR Operations', via: 'SharePoint' },
+      ],
+    },
+  ];
+  onboarding.memory = {
+    store: 'Lakebase',
+    note: 'Remembers completed steps and this manager’s past corrections, so the next new hire starts ahead.',
+  };
+  onboarding.ontology = [
+    {
+      kind: 'Business rule',
+      text: 'A new hire is “ready for day one” only when identity, access, training and equipment are all provisioned.',
+      origin: 'Curated',
+      source: 'Onboarding policy',
+      authority: 0.95,
+    },
+    {
+      kind: 'Authoritative source',
+      text: 'Role-to-access mapping comes from the certified role model, never from an individual’s past tickets.',
+      origin: 'Curated',
+      source: 'Genie Ontology',
+      authority: 0.9,
+    },
+  ];
+}
+
 export const CATALOG: Skill[] = catalog;
 export const DATA_ASSETS: DataAsset[] = dataAssets;
 export const CAPABILITIES: Capability[] = capabilities;
@@ -494,7 +623,7 @@ export interface WorkItem {
 }
 
 const HUMAN_TASKS: Record<string, string[]> = {
-  'rd-clin': ['Confirm site list for ZOS-401', 'Unblind check for DSMB pack'],
+  'rd-clin': ['Confirm site list for NWV-401', 'Unblind check for DSMB pack'],
   'rd-reg': ['Answer HA question 14 (clinical)', 'Approve label wording change'],
   quality: ['Close DEV-2311 before batch release', 'Sign CAPA-0922 effectiveness check'],
   supply: ['Approve allocation for EU shortfall', 'Confirm alternate supplier'],
@@ -508,15 +637,15 @@ const workItems: WorkItem[] = [
   {
     id: 'HT-201',
     kind: 'Human task',
-    title: 'Close DEV-2291 on the fill-finish line',
+    title: 'Sign off the drafted Module 2.7 clinical summary',
     capabilityId: SRA_ID,
     podId: SRP_ID,
     domainId: 'rd-reg',
     status: 'Open',
-    owner: 'QA Lead · Wavre',
+    owner: 'RA Lead · Vaccines',
     tier: 'Tier 2',
     due: '14 Oct',
-    blocks: 'Filing for GSK-2894512',
+    blocks: 'Filing for NWP-2894512',
     cost: 0,
   },
 ];
@@ -575,7 +704,7 @@ export interface Trigger {
   lastFired: string;
 }
 const TRIGGER_SEEDS: [Trigger['kind'], string, string, string][] = [
-  ['Event', 'Deviation closed', 'QMS', SRA_ID],
+  ['Event', 'Database lock recorded', 'EDC/CDMS', SRA_ID],
   ['Event', 'New HA letter received', 'RIM', 'answer-ha-query'],
   ['Event', 'Enrollment below plan for 2 weeks', 'CTMS', 'monitor-site-enrollment'],
   ['Event', 'Batch record complete', 'MES', 'review-batch-record'],
@@ -622,12 +751,12 @@ export const DENIALS: Denial[] = Array.from({ length: 42 }, (_, i) => {
     reason: pick(REASONS),
   };
 });
-DENIALS.unshift({ id: 'DN-0', when: 'today', agent: 'Quality Review Agent', pod: 'Submission Readiness Pod', domainId: 'rd-reg', resource: 'manufacturing.batch_genealogy', reason: 'Not in agent grants' });
+DENIALS.unshift({ id: 'DN-0', when: 'today', agent: 'QC & Consistency Agent', pod: 'Submission Dossier Pod', domainId: 'rd-reg', resource: 'demo.pharma.patient_summary', reason: 'Not in agent grants' });
 
 // ── One kind of agent ─────────────────────────────────────────────────────────
-// Every agent is a pod member. GSK-built agents get their know-how from skills; Databricks agents
+// Every agent is a pod member. Northwind-built agents get their know-how from skills; Databricks agents
 // (Genie Agents, Knowledge Assistants) and external agents (Vertex AI) come ready-made.
-export type BuiltBy = 'GSK' | 'Databricks' | 'External';
+export type BuiltBy = 'Northwind' | 'Databricks' | 'External';
 export function builtBy(s: Skill): BuiltBy {
   return s.runsOn?.startsWith('GCP') ? 'External' : 'Databricks';
 }
@@ -655,7 +784,7 @@ export interface AgentRow {
 }
 const PLATFORM_AGENT_ENTRIES = CATALOG.filter((s) => s.type === 'Genie Agent' || s.type === 'Knowledge Assistant');
 export const ALL_AGENTS: AgentRow[] = [
-  ...ROLE_AGENTS.map((a) => ({ id: a.id, name: a.name, builtBy: 'GSK' as const, kind: 'Skills-based', podIds: [a.podId], domainId: a.domainId, runs: a.runs30d, status: 'Certified', role: a })),
+  ...ROLE_AGENTS.map((a) => ({ id: a.id, name: a.name, builtBy: 'Northwind' as const, kind: 'Skills-based', podIds: [a.podId], domainId: a.domainId, runs: a.runs30d, status: 'Certified', role: a })),
   ...PLATFORM_AGENT_ENTRIES.map((s) => {
     const pods = POD_LIST.filter((p) => podPlatformAgents(p).some((x) => x.id === s.id));
     return {

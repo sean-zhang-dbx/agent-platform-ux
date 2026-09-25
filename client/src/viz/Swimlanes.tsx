@@ -4,11 +4,11 @@ import { roleAgentById } from '../data/estate';
 import type { WorkRequest } from '../data/types';
 import { AgentStatusChip } from '../components/ui';
 
-// One lane per GSK-built agent on a shared time axis. The scripted run is compressed; the axis shows
+// One lane per Northwind-built agent on a shared time axis. The scripted run is compressed; the axis shows
 // the real-world run time it stands for (~3m 40s).
 const REAL_SECONDS = 220; // axis label only: the compressed run stands for ~3m 40s
 const TICKS = [0, 60, 120, 180];
-const LANE: Record<string, string> = { clinical: 'Clinical', regintel: 'Reg Intel', quality: 'Quality', drafter: 'Drafter' };
+const LANE: Record<string, string> = { clinical: 'CSR Author', regintel: 'HA-Response', quality: 'QC', drafter: 'eCTD Assembler' };
 const FINDINGS = AGENT_FINDINGS as Record<string, { short: string } | undefined>;
 
 function lane(id: string): string {

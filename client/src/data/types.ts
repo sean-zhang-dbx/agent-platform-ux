@@ -21,7 +21,15 @@ export interface Skill {
   runsOn?: string;
 }
 
-export type AgentId = 'clinical' | 'regintel' | 'quality' | 'drafter';
+export type AgentId =
+  | 'clinical'
+  | 'regintel'
+  | 'quality'
+  | 'drafter'
+  | 'it-intake'
+  | 'it-knowledge'
+  | 'it-automation'
+  | 'it-escalation';
 
 export type Layer = 'skill' | 'tool' | 'agent';
 

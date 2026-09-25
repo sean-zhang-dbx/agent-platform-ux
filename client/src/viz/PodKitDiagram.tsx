@@ -1,15 +1,19 @@
 import { useStore } from '../state/store';
 import { builtBy, type RoleAgent } from '../data/estate';
+import { gateForAgent } from '../data/pods';
+import { sponsorOf } from '../data/access';
 import type { Skill } from '../data/types';
 import { KIT_COLOR, Legend, kitOf, shortName } from './palette';
 
-// One kind of agent: every pod member is an agent box. GSK-built agents carry skills and tools as kit;
+const WARN = '#b7791f';
+
+// One kind of agent: every pod member is an agent box. Northwind-built agents carry skills and tools as kit;
 // Databricks agents (Genie Agents, Knowledge Assistants) and external agents are ready-made members.
 
 const WIDTH = 996;
 const LEFT = 20;
 const AGENT_Y = 110;
-const AGENT_H = 44;
+const AGENT_H = 62;
 const KIT_Y = AGENT_Y + AGENT_H + 22;
 const KIT_H = 30;
 const KIT_GAP = 10;
@@ -42,12 +46,13 @@ export function PodKitDiagram({ agents, platform, onPick }: { agents: RoleAgent[
       <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
         <Legend kits={['skill', 'tool']} />
         <span className="flex items-center gap-1.5 text-xs text-[var(--ink-soft)]">
-          <span className="h-2.5 w-5 rounded-sm bg-[#3a3632]" /> GSK-built agent
+          <span className="h-2.5 w-5 rounded-sm bg-[#3a3632]" /> Northwind-built agent
           <span className="ml-2 h-2.5 w-5 rounded-sm border-b-[3px] border-[#2a78d6] bg-[#3a3632]" /> Databricks agent
+          <span className="ml-2 h-2.5 w-5 rounded-sm border-b-[3px] border-[#b7791f] bg-[#3a3632]" /> needs a department sign-off
         </span>
         <span className="text-xs text-[var(--ink-faint)]">Every member is an agent · click one for details</span>
       </div>
-      <svg viewBox={`0 0 ${WIDTH.toString()} ${height.toString()}`} className="w-full" role="img" aria-label="Pod: orchestrator and its agents. GSK-built agents show their skills and tools; Databricks agents are ready-made members">
+      <svg viewBox={`0 0 ${WIDTH.toString()} ${height.toString()}`} className="w-full" role="img" aria-label="Pod: orchestrator and its agents. Northwind-built agents show their skills and tools; Databricks agents are ready-made members">
         <rect x={mid - 150} y={14} width={300} height={52} rx={12} fill="#2a2a2a" />
         <text x={mid} y={38} textAnchor="middle" fill="#fff" fontSize="15" fontWeight="600">
           Orchestrator
@@ -87,18 +92,24 @@ export function PodKitDiagram({ agents, platform, onPick }: { agents: RoleAgent[
         {agents.map((a, i) => {
           const cx = LEFT + colW * i + colW / 2;
           const kit = [...a.skills, ...a.tools].map(byId).filter((s) => s !== undefined);
+          const gate = gateForAgent(a.podId, a.id);
+          const dept = gate?.department ?? sponsorOf(a);
           return (
             <g key={a.id}>
               <path d={`M${mid.toString()},66 C${mid.toString()},92 ${cx.toString()},84 ${cx.toString()},${AGENT_Y.toString()}`} stroke="#c9bfb7" strokeWidth="1.5" fill="none" />
               <g onClick={() => onPick(a.id)} className="cursor-pointer">
                 <rect x={cx - boxW / 2} y={AGENT_Y} width={boxW} height={AGENT_H} rx={10} fill="#3a3632" />
-                <text x={cx} y={AGENT_Y + 19} textAnchor="middle" fill="#fff" fontSize={nameSize} fontWeight="600">
+                {gate && <rect x={cx - boxW / 2} y={AGENT_Y + AGENT_H - 5} width={boxW} height={5} rx={2.5} fill={WARN} />}
+                <text x={cx} y={AGENT_Y + 16} textAnchor="middle" fill="#fff" fontSize={nameSize} fontWeight="600">
                   {fit(a.name, boxW - 12, nameSize)}
                 </text>
-                <text x={cx} y={AGENT_Y + 35} textAnchor="middle" fill="#bdb6b0" fontSize="10" fontFamily="JetBrains Mono, monospace">
+                <text x={cx} y={AGENT_Y + 30} textAnchor="middle" fill="#bdb6b0" fontSize="9.5" fontFamily="JetBrains Mono, monospace">
                   {a.servicePrincipal}
                 </text>
-                <title>{`${a.name}: click for details`}</title>
+                <text x={cx} y={AGENT_Y + 47} textAnchor="middle" fill={gate ? '#f0c775' : '#9c948c'} fontSize="10">
+                  {fit(`${gate ? '⚑ sign-off · ' : 'acts for · '}${dept}`, boxW - 16, 10)}
+                </text>
+                <title>{gate ? `${a.name} · acts for ${dept} · sign-off: ${gate.approverRole}` : `${a.name} · acts for ${dept}`}</title>
               </g>
               {kit.length > 0 && <line x1={cx} y1={AGENT_Y + AGENT_H} x2={cx} y2={KIT_Y + (kit.length - 1) * (KIT_H + KIT_GAP) + KIT_H / 2} stroke="#d9d2cb" strokeWidth="1.5" />}
               {kit.map((s, k) => {

@@ -144,7 +144,7 @@ export function capabilityManifest(c: Capability, skillsCatalog: Skill[] = CATAL
     '',
     'skills:                                 # how the work is done',
     ...(c.skills.length ? c.skills.map((id) => get(id)).filter((s) => s !== undefined).map((s) => `  - ${refOf(s)}@${ver(s.version)}`) : ['  []']),
-    'tools:                                  # how it acts on GSK systems',
+    'tools:                                  # how it acts on Northwind systems',
     ...(c.tools.length
       ? c.tools.flatMap((id) => {
           const t = get(id);

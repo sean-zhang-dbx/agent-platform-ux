@@ -42,7 +42,7 @@ export function HomePage() {
   const caps = inDomain(CAPABILITIES);
   const pods = inDomain(POD_LIST);
   const agents = inDomain(ROLE_AGENTS);
-  const platform = inDomain(ALL_AGENTS.filter((a) => a.builtBy !== 'GSK'));
+  const platform = inDomain(ALL_AGENTS.filter((a) => a.builtBy !== 'Northwind'));
   const work = inDomain(WORK_ITEMS);
   const runs = dailyRuns(domain);
   const totalRuns = runs.reduce((a, b) => a + b, 0);
@@ -63,7 +63,7 @@ export function HomePage() {
       <div className="grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-6">
         <Kpi label="Capabilities live" value={caps.filter((c) => c.status === 'Live').length} sub={`${caps.length.toString()} total`} to="/capabilities" />
         <Kpi label="Pods active" value={pods.filter((p) => p.status === 'Active').length} sub={`${pods.length.toString()} total`} to="/pods" />
-        <Kpi label="Agents" value={agents.length + platform.length} sub={`${agents.length.toString()} GSK-built · ${platform.length.toString()} Databricks`} to="/agents" />
+        <Kpi label="Agents" value={agents.length + platform.length} sub={`${agents.length.toString()} Northwind-built · ${platform.length.toString()} Databricks`} to="/agents" />
         <Kpi label="Skills certified" value={skillsCertified} sub={`${review.length.toString()} awaiting review`} to="/skills" />
         <Kpi label="Pod runs" value={totalRuns.toLocaleString()} sub="last 30 days" to="/work" />
         <Kpi label="Spend" value={money(spend)} sub="via AI Gateway" to="/governance?tab=spend" />

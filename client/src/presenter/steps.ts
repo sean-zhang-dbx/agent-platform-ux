@@ -19,7 +19,7 @@ export const PRESENTER_STEPS: PresenterStep[] = [
   {
     title: 'A capability, not a skill',
     action: 'capabilities',
-    say: 'GSK’s asset is the **capability**: skills + data + context. The skill declares its controls; **the platform enforces them**.',
+    say: 'Northwind’s asset is the **capability**: skills + data + context. The skill declares its controls; **the platform enforces them**.',
     live: 'Skills are UC Skills; data stays in Unity Catalog; context comes from Genie Ontology.',
   },
   {
@@ -31,7 +31,7 @@ export const PRESENTER_STEPS: PresenterStep[] = [
   {
     title: 'Just ask',
     action: 'chat',
-    say: 'The regulatory lead **just asks**, in plain language.',
+    say: 'The data is ready at database lock. The regulatory lead **just asks** for the dossier, in plain language.',
     live: 'The chat calls a composer agent in the Databricks App.',
   },
   {
@@ -49,7 +49,7 @@ export const PRESENTER_STEPS: PresenterStep[] = [
   {
     title: 'Governance, live',
     action: 'none',
-    say: 'The Quality agent reached outside its grants. **Denied, logged, rerouted.**',
+    say: 'The QC agent reached for patient-level data, outside its grants. **Denied, logged, rerouted.**',
     live: 'Unity Catalog returns PERMISSION_DENIED and the denial lands in the audit log.',
   },
   {

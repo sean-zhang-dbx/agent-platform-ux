@@ -14,7 +14,7 @@ function clock(): string {
   return new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
 }
 
-// Everything each GSK-built agent is given: skills, tools and the Databricks agents it works with.
+// Everything each Northwind-built agent is given: skills, tools and the Databricks agents it works with.
 function selectionFor(agentIds: string[]): Record<string, string[]> {
   const out: Record<string, string[]> = {};
   for (const id of agentIds) {
@@ -37,12 +37,12 @@ function archived(
 
 const SEED_REQUESTS: WorkRequest[] = [
   archived({
-    id: 'WR-1043', title: 'Assess submission readiness · GSK-1907733', requestText: 'Assess submission readiness for GSK-1907733 (Phase II).', domain: 'R&D Regulatory',
+    id: 'WR-1043', title: 'Author a submission dossier · NWP-1907733', requestText: 'Author the submission dossier for NWP-1907733 (Phase II).', domain: 'R&D Regulatory',
     urgency: 'Standard', requester: 'RA Lead · Oncology', createdAt: 'Yesterday, 15:48', podId: SRP_ID, capabilityId: SRA_ID, status: 'completed', cost: 0.39, tokens: 81200,
     decision: { decision: 'approved', by: 'RA Lead · Oncology', at: 'Yesterday, 16:12', comment: '' },
   }),
   archived({
-    id: 'WR-1049', title: 'Draft a CSR section · ZOS-305 §11', requestText: 'Draft CSR section 11 (efficacy evaluation) for ZOS-305.', domain: 'R&D Clinical',
+    id: 'WR-1049', title: 'Draft a CSR section · NWV-305 §11', requestText: 'Draft CSR section 11 (efficacy evaluation) for NWV-305.', domain: 'R&D Clinical',
     urgency: 'Standard', requester: 'Medical Writing Lead', createdAt: 'Today, 08:02', podId: 'csr-authoring', capabilityId: 'draft-csr-section', status: 'pending_approval', cost: 1.72, tokens: 356000, decision: undefined,
   }),
   archived({
@@ -202,7 +202,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
         type: 'create',
         request: {
           id,
-          title: cap.id === SRA_ID ? 'Assess submission readiness · GSK-2894512' : `${cap.name} · ${cap.context[0]?.value ?? ''}`,
+          title: cap.id === SRA_ID ? 'Author a submission dossier · NWP-2894512' : `${cap.name} · ${cap.context[0]?.value ?? ''}`,
           requestText,
           domain: cap.domain,
           urgency: 'Standard',
