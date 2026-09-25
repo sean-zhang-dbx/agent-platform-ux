@@ -1,6 +1,6 @@
 import type { Skill } from './types';
 
-// All synthetic. Names and owners are illustrative, not real Northwind assets.
+// All synthetic. Names and owners are illustrative, not real GSK assets.
 export const SEED_SKILLS: Skill[] = [
   {
     id: 'clinical-summary-authoring',
@@ -252,6 +252,6 @@ export const AUDIT_ACTORS = [
   'sp-rd-clin-7f3a (Clinical Data Agent)',
   'sp-rd-reg-19c2 (Regulatory Intel Agent)',
   'sp-qa-rev-5b81 (Quality Review Agent)',
-  'ra.lead (via Genie One)',
+  'sean.zhang (via Genie One)',
   'sp-rd-draft-a44e (Report Drafter)',
 ];

@@ -2,12 +2,12 @@ import type { AgentStatus, LogKind, RequestStatus } from './types';
 
 // Composer "thinking" lines, revealed one at a time before the pod proposal.
 export const COMPOSER_STEPS: { text: string; detail?: string }[] = [
-  { text: 'Reading the request', detail: 'compound NWP-2894512 · Phase III complete · intent: submission readiness · domain: R&D Regulatory' },
+  { text: 'Reading the request', detail: 'compound GSK-2894512 · Phase III complete · intent: submission readiness · domain: R&D Regulatory' },
   { text: 'Breaking it into tasks', detail: 'clinical summary · regulatory precedent · open quality deviations · go/no-go report' },
-  { text: 'Searching the skills catalog for each task', detail: '15 entries scanned (5 skills, 6 tools, 4 Databricks agents) · kept only Certified ones' },
+  { text: 'Searching skills.gsk.com for each task', detail: '15 entries scanned (5 skills, 6 tools, 4 Databricks agents) · kept only Certified ones' },
   { text: 'Skipping 2 tools that are not certified', detail: 'LIMS Stability Data (Sandbox) · RIM Connector (Under Review)' },
   { text: 'Pulling context from Genie Ontology', detail: '4 snippets · 2 curated (UC Page, metric view) · 2 inferred' },
-  { text: 'Matching a certified pod template', detail: 'Submission Readiness Pod v1.3 · 7 agents (4 Northwind-built, 3 Databricks) · 4 skills, 3 tools' },
+  { text: 'Matching a certified pod template', detail: 'Submission Readiness Pod v1.3 · 7 agents (4 GSK-built, 3 Databricks) · 4 skills, 3 tools' },
   { text: 'Checking identities and access', detail: 'each role gets its own service principal · all read-only except Report Drafter (write draft only)' },
   { text: 'Pod draft ready for your review', detail: 'estimated 3 to 4 min · about $0.42 · approval required before anything is final' },
 ];
@@ -34,13 +34,13 @@ export const RUN_SCRIPT: ScriptStep[] = [
   { at: 2000, agent: 'regintel', status: 'running', kind: 'info', text: 'Loaded skill Regulatory Precedent Analysis v1.1', short: 'Loaded skill' },
   { at: 2200, agent: 'quality', status: 'running', kind: 'info', text: 'Loaded skill Quality Gate Assessment v1.2', short: 'Loaded skill' },
 
-  { at: 3000, agent: 'clinical', kind: 'tool', text: 'get_clinical_summary("NWP-2894512") → 3 trials, 14,210 participants', short: '3 trials found', cost: 0.012, tokens: 2100 },
-  { at: 3800, agent: 'quality', kind: 'tool', text: 'check_deviation_status("NWP-2894512") → 2 open deviations, 1 open CAPA', short: '2 open deviations', cost: 0.008, tokens: 1500 },
+  { at: 3000, agent: 'clinical', kind: 'tool', text: 'get_clinical_summary("GSK-2894512") → 3 trials, 14,210 participants', short: '3 trials found', cost: 0.012, tokens: 2100 },
+  { at: 3800, agent: 'quality', kind: 'tool', text: 'check_deviation_status("GSK-2894512") → 2 open deviations, 1 open CAPA', short: '2 open deviations', cost: 0.008, tokens: 1500 },
   { at: 4400, agent: 'regintel', kind: 'tool', text: 'Knowledge Assistant: "prior adjuvanted zoster vaccine submissions" → 6 documents', short: '6 precedent documents', cost: 0.021, tokens: 4800 },
 
   { at: 5200, agent: 'quality', status: 'blocked', kind: 'deny', text: 'Tried to read manufacturing.batch_genealogy: DENIED, not in this agent’s grants. Denial written to the audit log.', short: 'Denied: batch_genealogy (logged)' },
   { at: 6400, agent: 'orchestrator', kind: 'warn', text: 'Quality Review Agent was blocked. Routing around it: use the Quality Genie Agent’s batch_release summary instead.', short: 'Rerouted the Quality agent' },
-  { at: 7000, agent: 'quality', status: 'running', kind: 'tool', text: 'Quality Genie Agent: "batch release status for NWP-2894512" → 4 lots released, 0 on hold', short: 'Rerouted · 4 lots released', cost: 0.014, tokens: 3200 },
+  { at: 7000, agent: 'quality', status: 'running', kind: 'tool', text: 'Quality Genie Agent: "batch release status for GSK-2894512" → 4 lots released, 0 on hold', short: 'Rerouted · 4 lots released', cost: 0.014, tokens: 3200 },
 
   { at: 7600, agent: 'clinical', kind: 'tool', text: 'Clinical Trials Genie Agent: "primary endpoint results by trial" → efficacy 91.3% (95% CI 86.9–94.4)', short: 'Efficacy 91.3%', cost: 0.018, tokens: 3900 },
   { at: 8200, agent: 'regintel', status: 'retrying', kind: 'warn', text: 'Model call timed out after 30s (simulated). Orchestrator retrying, attempt 2 of 3.', short: 'Timed out · retrying' },

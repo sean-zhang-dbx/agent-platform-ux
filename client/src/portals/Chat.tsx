@@ -100,7 +100,7 @@ export function ChatPortal() {
               if (e.key === 'Enter' && !e.shiftKey) send(e);
             }}
             rows={3}
-            placeholder="Ask for an outcome, e.g. triage deviation DEV-2311 at Northgate"
+            placeholder="Ask for an outcome, e.g. triage deviation DEV-2311 at Wavre"
             className="w-full resize-none bg-transparent px-1 text-[15px] outline-none placeholder:text-[var(--ink-faint)]"
           />
           <div className="flex justify-end">

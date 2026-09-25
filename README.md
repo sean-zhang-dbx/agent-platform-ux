@@ -1,8 +1,8 @@
 # agent-platform-ux
 
-A UX prototype of an enterprise **agent platform**: governed skills, tools, data and context are put together into **capabilities**, staffed by **agent pods**, run from a chat, and signed off by a person. Everything is simulated. "Northwind" is a fictional pharma company, and all data, people and numbers are synthetic.
+A UX prototype of an enterprise **agent platform**, built around GSK's "agent pods" vision: governed skills, tools, data and context are put together into **capabilities**, staffed by **agent pods**, run from a chat, and signed off by a person. Everything is simulated: all data, people and numbers are synthetic.
 
-Built as a [Databricks App](https://docs.databricks.com/aws/en/dev-tools/databricks-apps/) on [AppKit](https://developers.databricks.com/docs/appkit/v0/) (React, TypeScript, Tailwind). No backend data: state lives in memory and resets on reload.
+Built as a [Databricks App](https://docs.databricks.com/aws/en/dev-tools/databricks-apps/) on [AppKit](https://developers.databricks.com/docs/appkit/v0/) (React, TypeScript, Tailwind). **Front end only**: there is no database or backend API. Most state lives in memory and resets on reload; the trial feasibility workflow keeps its runs in the browser's localStorage.
 
 ## What's in it
 
@@ -11,6 +11,7 @@ Built as a [Databricks App](https://docs.databricks.com/aws/en/dev-tools/databri
 - **Agents**: one kind of agent, each with an **Agent Card**: who it acts on behalf of, and what it can reach for that person (effective access = agent grants ∩ the person's access).
 - **Metadata-driven development**: every agent, capability and pod is a YAML manifest; the app shows what a platform loader would generate from it (identity, Unity Catalog grants, AI Gateway policy, evals, an AppKit `agent.md`).
 - **Pods, Work, Governance**: pod versions and promotion, work queue, maturity and spend, access denials, certification.
+- **Trial feasibility workflow** (`/feasibility`): an orchestrator runs four agents in parallel (protocol feasibility, site selection, patient diversity, clinical drafting) over seeded mock systems of record (CTMS, site & safety database, protocol library, versioned document repository). Three workstreams stop at a named reviewer's e-signature (approve, reject with comment, or request changes, which sends the agent back to redo the step). Every decision is written to an append-only, SHA-256 hash-chained audit log with a verify button; the Program Lead's release locks the record. The "API" is an in-browser engine (`client/src/feasibility/mock/`) with the same contract a real backend would expose.
 - **Presenter mode**: an 11-step guided walkthrough.
 
 ## Run it

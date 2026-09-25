@@ -7,7 +7,7 @@ export interface Citation {
 }
 
 export const CITATIONS: Citation[] = [
-  { id: 'C1', agent: 'clinical', source: 'demo.pharma.clinical_trials · trials NWV-301, NWV-302, NWV-305' },
+  { id: 'C1', agent: 'clinical', source: 'demo.pharma.clinical_trials · trials ZOS-301, ZOS-302, ZOS-305' },
   { id: 'C2', agent: 'clinical', source: 'demo.pharma.trial_endpoints · primary endpoint rows' },
   { id: 'C3', agent: 'regintel', source: 'regulatory_docs/prior_submission_summary_2019.pdf, p.4' },
   { id: 'C4', agent: 'regintel', source: 'regulatory_docs/ha_query_log_zoster.pdf, p.11' },
@@ -20,7 +20,7 @@ export const AGENT_FINDINGS: Record<AgentId, { headline: string; short: string; 
     headline: 'Primary endpoint met across 3 Phase III trials',
     short: 'Endpoint met · 3 trials',
     bullets: [
-      '14,210 participants across NWV-301, 302 and 305 [C1]',
+      '14,210 participants across ZOS-301, 302 and 305 [C1]',
       'Vaccine efficacy 91.3% (95% CI 86.9 to 94.4) [C2]',
       'No new safety signal versus the Phase II profile [C2]',
     ],
@@ -84,4 +84,4 @@ export const ACCEPTANCE_RESULTS = [
 ];
 
 export const DEFAULT_REQUEST =
-  'Assess submission readiness for compound NWP-2894512 (adult vaccine booster, Phase III complete). Pull the clinical summary, check regulatory history for similar submissions, review any open quality deviations that could block filing, and draft a readiness report with a go/no-go recommendation. Flag anything that needs my attention before I sign off.';
+  'Assess submission readiness for compound GSK-2894512 (Shingrix booster, Phase III complete). Pull the clinical summary, check regulatory history for similar submissions, review any open quality deviations that could block filing, and draft a readiness report with a go/no-go recommendation. Flag anything that needs my attention before I sign off.';

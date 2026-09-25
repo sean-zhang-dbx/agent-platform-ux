@@ -14,9 +14,9 @@ import { capabilityManifest, parseCapabilityYaml } from '../data/manifest';
 
 const STEPS = [
   { key: 'skills', label: 'Skills', hint: 'How the work is done', color: KIT_COLOR.skill },
-  { key: 'tools', label: 'Tools', hint: 'How it acts on Northwind systems', color: KIT_COLOR.tool },
+  { key: 'tools', label: 'Tools', hint: 'How it acts on GSK systems', color: KIT_COLOR.tool },
   { key: 'data', label: 'Data', hint: 'The evidence it relies on', color: KIT_COLOR.data },
-  { key: 'context', label: 'Context', hint: 'The situation, plus what Northwind means by its words', color: 'var(--brand)' },
+  { key: 'context', label: 'Context', hint: 'The situation, plus what GSK means by its words', color: 'var(--brand)' },
 ] as const;
 type StepKey = (typeof STEPS)[number]['key'];
 
@@ -401,7 +401,7 @@ export function CapabilityComposer() {
                   </div>
                 </div>
                 <div className="relative overflow-hidden rounded-xl border border-[#2e2a27]">
-                  <div className="bg-[#2a2623] px-3 py-1.5 font-mono text-[11px] text-[#cbbfb6]">nw-agents/{domainId}/capabilities/{slug(name || 'untitled')}.yaml</div>
+                  <div className="bg-[#2a2623] px-3 py-1.5 font-mono text-[11px] text-[#cbbfb6]">gsk-agents/{domainId}/capabilities/{slug(name || 'untitled')}.yaml</div>
                   {yamlEdit === null ? (
                     <button type="button" onClick={() => setYamlEdit(yaml)} className="block w-full text-left" title="Click to edit">
                       <YamlView text={yaml} className="max-h-[440px]" />

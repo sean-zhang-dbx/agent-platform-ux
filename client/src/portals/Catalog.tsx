@@ -90,5 +90,5 @@ export function SkillsPage() {
 }
 
 export function ToolsPage() {
-  return <CatalogPage layer="tool" title="Tools" sub="How skills act on Northwind systems: UC functions and MCP services." />;
+  return <CatalogPage layer="tool" title="Tools" sub="How skills act on GSK systems: UC functions and MCP services." />;
 }

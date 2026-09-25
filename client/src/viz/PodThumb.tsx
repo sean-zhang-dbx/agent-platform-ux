@@ -1,6 +1,6 @@
 import { KIT_COLOR } from './palette';
 
-// Tiny pod shape: orchestrator on top, agents below (Northwind-built with kit dots; Databricks agents with a blue base).
+// Tiny pod shape: orchestrator on top, agents below (GSK-built with kit dots; Databricks agents with a blue base).
 export function PodThumb({ kits, muted = false }: { kits: (keyof typeof KIT_COLOR)[][]; muted?: boolean }) {
   const n = kits.length;
   const w = 200;

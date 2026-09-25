@@ -3,7 +3,7 @@ import { builtBy, type RoleAgent } from '../data/estate';
 import type { Skill } from '../data/types';
 import { KIT_COLOR, Legend, kitOf, shortName } from './palette';
 
-// One kind of agent: every pod member is an agent box. Northwind-built agents carry skills and tools as kit;
+// One kind of agent: every pod member is an agent box. GSK-built agents carry skills and tools as kit;
 // Databricks agents (Genie Agents, Knowledge Assistants) and external agents are ready-made members.
 
 const WIDTH = 996;
@@ -42,12 +42,12 @@ export function PodKitDiagram({ agents, platform, onPick }: { agents: RoleAgent[
       <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
         <Legend kits={['skill', 'tool']} />
         <span className="flex items-center gap-1.5 text-xs text-[var(--ink-soft)]">
-          <span className="h-2.5 w-5 rounded-sm bg-[#3a3632]" /> Northwind-built agent
+          <span className="h-2.5 w-5 rounded-sm bg-[#3a3632]" /> GSK-built agent
           <span className="ml-2 h-2.5 w-5 rounded-sm border-b-[3px] border-[#2a78d6] bg-[#3a3632]" /> Databricks agent
         </span>
         <span className="text-xs text-[var(--ink-faint)]">Every member is an agent · click one for details</span>
       </div>
-      <svg viewBox={`0 0 ${WIDTH.toString()} ${height.toString()}`} className="w-full" role="img" aria-label="Pod: orchestrator and its agents. Northwind-built agents show their skills and tools; Databricks agents are ready-made members">
+      <svg viewBox={`0 0 ${WIDTH.toString()} ${height.toString()}`} className="w-full" role="img" aria-label="Pod: orchestrator and its agents. GSK-built agents show their skills and tools; Databricks agents are ready-made members">
         <rect x={mid - 150} y={14} width={300} height={52} rx={12} fill="#2a2a2a" />
         <text x={mid} y={38} textAnchor="middle" fill="#fff" fontSize="15" fontWeight="600">
           Orchestrator

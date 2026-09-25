@@ -25,7 +25,7 @@ export const YOU_ROLE = 'RA Lead · Vaccines';
 export const PEOPLE: Person[] = [
   { id: 'you', name: 'You', role: YOU_ROLE, domains: ['rd-reg', 'rd-clin', 'quality'], lacks: ['patient_summary'] },
   { id: 'sean', name: 'Sean', role: 'R&D researcher', domains: ['rd-clin', 'rd-reg'], lacks: ['patient_summary', 'adverse_events', 'ha_letters'], readOnly: true },
-  { id: 'priya', name: 'Priya', role: 'Quality lead · Riverside', domains: ['quality', 'mfg', 'supply'], lacks: [] },
+  { id: 'priya', name: 'Priya', role: 'Quality lead · Ware', domains: ['quality', 'mfg', 'supply'], lacks: [] },
   { id: 'alex', name: 'Alex', role: 'CRO contractor (external)', domains: ['rd-clin'], lacks: ['adverse_events', 'patient_summary', 'protocols', 'site_enrollment'], readOnly: true },
 ];
 
@@ -192,14 +192,14 @@ export const riskTier = (actions: AgentAction[]) => Math.max(...actions.map((x) 
 export function stopsAt(a: RoleAgent): string {
   const f = SRP_AGENTS.find((x) => x.id === a.id);
   if (f) return f.cannot[0];
-  return 'Anything that commits Northwind needs a named person';
+  return 'Anything that commits GSK needs a named person';
 }
 
 // ── Identity, ownership, history ───────────────────────────────────────────────
 const FLAGSHIP_VERSION: Record<string, string> = { clinical: '2.1.0', regintel: '1.4.0', quality: '1.2.0', drafter: '3.0.1' };
 export const agentVersion = (a: RoleAgent) => FLAGSHIP_VERSION[a.id] ?? `1.${(hash(a.id) % 6).toString()}.0`;
 export const agentSlug = (a: RoleAgent) => slug(a.name);
-export const entraId = (a: RoleAgent) => `nw-${agentSlug(a)}`;
+export const entraId = (a: RoleAgent) => `gsk-${agentSlug(a)}`;
 const FLAGSHIP_SPONSOR: Record<string, string> = { clinical: 'Clinical Data Office', regintel: 'Global Regulatory Affairs', quality: 'Quality Assurance', drafter: 'Global Regulatory Affairs' };
 // An agent's home department can differ from its pod's (the flagship pod staffs agents from three departments).
 export const agentDomain = (a: RoleAgent) => FLAGSHIP_TABLE_DOMAIN[a.id] ?? a.domainId;

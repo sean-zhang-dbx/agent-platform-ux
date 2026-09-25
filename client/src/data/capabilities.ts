@@ -65,7 +65,7 @@ export const FLAGSHIP: Capability = {
     reviewerMin: 18,
     trend: [0, 1, 2, 1, 0, 0, 2, 3, 1, 2, 1, 0, 0, 1, 2, 2, 3, 1, 0, 0, 2, 1, 2, 3, 2, 0, 0, 1, 2, 1],
     sampleRequest:
-      'Assess submission readiness for compound NWP-2894512 (adult vaccine booster, Phase III complete). Pull the clinical summary, check regulatory history for similar submissions, review any open quality deviations that could block filing, and draft a readiness report with a go/no-go recommendation. Flag anything that needs my attention before I sign off.',
+      'Assess submission readiness for compound GSK-2894512 (Shingrix booster, Phase III complete). Pull the clinical summary, check regulatory history for similar submissions, review any open quality deviations that could block filing, and draft a readiness report with a go/no-go recommendation. Flag anything that needs my attention before I sign off.',
     skills: ['clinical-summary-authoring', 'regulatory-precedent-analysis', 'quality-gate-assessment', 'readiness-report-template'],
     tools: ['get-clinical-summary', 'check-deviation-status', 'save-report-draft'],
     links: [
@@ -82,7 +82,7 @@ export const FLAGSHIP: Capability = {
       { id: 'd-quality', name: 'Deviations & batch release', ref: 'demo.pharma.deviations, capas, batch_release', via: 'Quality & Deviations Genie Agent', readBy: ['check-deviation-status', 'quality-genie'] },
     ],
     context: [
-      { key: 'Study', value: 'NWV-301 · 302 · 305' },
+      { key: 'Study', value: 'ZOS-301 · 302 · 305' },
       { key: 'Phase', value: 'III complete' },
       { key: 'Jurisdiction', value: 'FDA (US)' },
       { key: 'User', value: 'RA Lead · Vaccines' },

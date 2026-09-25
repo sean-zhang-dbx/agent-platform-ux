@@ -19,7 +19,7 @@ export const PRESENTER_STEPS: PresenterStep[] = [
   {
     title: 'A capability, not a skill',
     action: 'capabilities',
-    say: 'Northwind’s asset is the **capability**: skills + data + context. The skill declares its controls; **the platform enforces them**.',
+    say: 'GSK’s asset is the **capability**: skills + data + context. The skill declares its controls; **the platform enforces them**.',
     live: 'Skills are UC Skills; data stays in Unity Catalog; context comes from Genie Ontology.',
   },
   {

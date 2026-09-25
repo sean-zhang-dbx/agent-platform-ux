@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate, useParams, useSearchParams } from 'react-router';
-import { MessageSquare, Search } from 'lucide-react';
+import { MessageSquare, Play, Search } from 'lucide-react';
 import { useStore } from '../state/store';
 import { SRP_ID } from '../data/pods';
 import { CAPABILITIES, POD_LIST, WORK_ITEMS, podById, podMemberCount, podPlatformAgents, roleAgentById, type PodDef, type RoleAgent } from '../data/estate';
-import { Chip, PageHeader, Panel, PrimaryButton } from '../components/ui';
+import { Chip, PageHeader, Panel, PrimaryButton, SecondaryButton } from '../components/ui';
 import { FilterSelect } from '../components/DataTable';
 import { SectionTitle } from '../components/bits';
 import { ManifestPanel } from '../components/Manifest';
@@ -111,11 +111,18 @@ export function PodDetailPage() {
         title={pod.name}
         sub={`${pod.owner} · ${pod.domain}`}
         right={
-          caps[0] && (
-            <PrimaryButton onClick={() => void navigate(`/ask?cap=${caps[0].id}`)}>
-              <MessageSquare className="h-4 w-4" /> Use in Ask
-            </PrimaryButton>
-          )
+          <div className="flex gap-2">
+            {pod.id === 'trial-feasibility' && (
+              <PrimaryButton onClick={() => void navigate('/feasibility')}>
+                <Play className="h-4 w-4" /> Run live workflow
+              </PrimaryButton>
+            )}
+            {caps[0] && (
+              <SecondaryButton onClick={() => void navigate(`/ask?cap=${caps[0].id}`)}>
+                <MessageSquare className="h-4 w-4" /> Use in Ask
+              </SecondaryButton>
+            )}
+          </div>
         }
       />
       <div className="-mt-3 mb-5 flex flex-wrap items-center gap-2">
@@ -123,7 +130,7 @@ export function PodDetailPage() {
         <Chip tone="brand">{flagship ? state.liveVersion : pod.version} live</Chip>
         <Chip>{pod.autonomyTier}</Chip>
         <Chip>
-          {podMemberCount(pod)} agents · {pod.agentIds.length} Northwind-built · {podPlatformAgents(pod).length} Databricks
+          {podMemberCount(pod)} agents · {pod.agentIds.length} GSK-built · {podPlatformAgents(pod).length} Databricks
         </Chip>
         <Chip>
           {pod.runsThisMonth.toLocaleString()} runs · {money(pod.cost30d)} · 30d

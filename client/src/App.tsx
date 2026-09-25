@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { createBrowserRouter, Link, Navigate, NavLink, Outlet, RouterProvider, useLocation, useNavigate, useParams } from 'react-router';
 import { CommandDialog, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@databricks/appkit-ui/react';
-import { BookOpen, Bot, Boxes, ChevronRight, Layers, LayoutDashboard, ListChecks, MessageSquare, Presentation, RotateCcw, Search, ShieldCheck, Wrench } from 'lucide-react';
+import { BookOpen, Bot, Boxes, ChevronRight, ClipboardCheck, Layers, LayoutDashboard, ListChecks, MessageSquare, Presentation, RotateCcw, Search, ShieldCheck, Wrench } from 'lucide-react';
 import { StoreProvider, useStore } from './state/store';
 import { cx } from './lib/format';
 import { ALL_AGENTS, CAPABILITIES, CATALOG, DOMAINS, ESTATE_COUNTS, POD_LIST, WORK_ITEMS, capabilityById, podById } from './data/estate';
@@ -16,6 +16,7 @@ import { PodsPage, PodDetailPage } from './portals/Pods';
 import { WorkPortal } from './portals/Work';
 import { RequestPage } from './portals/work/RequestPage';
 import { GovernancePage } from './portals/Governance';
+import { FeasibilityAuditPage, FeasibilityHome, FeasibilityReleasePage, FeasibilityRunPage, FeasibilityWorkstreamPage } from './portals/Feasibility';
 import { PresenterBar } from './presenter/PresenterBar';
 
 const NAV: { section?: string; items: { to: string; label: string; icon: typeof Layers; count?: number }[] }[] = [
@@ -39,12 +40,13 @@ const NAV: { section?: string; items: { to: string; label: string; icon: typeof 
     section: 'Operations',
     items: [
       { to: '/work', label: 'Work', icon: ListChecks },
+      { to: '/feasibility', label: 'Trial feasibility', icon: ClipboardCheck },
       { to: '/governance', label: 'Governance', icon: ShieldCheck },
     ],
   },
 ];
 
-const SECTION_LABEL: Record<string, string> = { ask: 'Ask', capabilities: 'Capabilities', skills: 'Skills', tools: 'Tools', agents: 'Agents', pods: 'Pods', work: 'Work', governance: 'Governance' };
+const SECTION_LABEL: Record<string, string> = { ask: 'Ask', capabilities: 'Capabilities', skills: 'Skills', tools: 'Tools', agents: 'Agents', pods: 'Pods', work: 'Work', feasibility: 'Trial feasibility', governance: 'Governance' };
 
 function Breadcrumbs() {
   const { pathname } = useLocation();
@@ -290,6 +292,11 @@ const router = createBrowserRouter([
       { path: '/pods/:podId', element: <PodDetailPage /> },
       { path: '/work', element: <WorkPortal /> },
       { path: '/work/:requestId', element: <RequestPage /> },
+      { path: '/feasibility', element: <FeasibilityHome /> },
+      { path: '/feasibility/:runId', element: <FeasibilityRunPage /> },
+      { path: '/feasibility/:runId/ws/:ws', element: <FeasibilityWorkstreamPage /> },
+      { path: '/feasibility/:runId/audit', element: <FeasibilityAuditPage /> },
+      { path: '/feasibility/:runId/release', element: <FeasibilityReleasePage /> },
       { path: '/governance', element: <GovernancePage /> },
       { path: '*', element: <Navigate to="/" replace /> },
     ],

@@ -102,7 +102,7 @@ export function agentManifest(a: RoleAgent): ManifestBundle {
 
   const grants = skills.length + tools.length + r.tables.length + r.agents.length;
   return {
-    path: `nw-agents/${agentDomain(a)}/agents/${agentSlug(a)}.yaml`,
+    path: `gsk-agents/${agentDomain(a)}/agents/${agentSlug(a)}.yaml`,
     files: [
       { name: 'agent.yaml', text: tidy(L) },
       { name: 'agent.md (generated)', text: tidy(md) },
@@ -144,7 +144,7 @@ export function capabilityManifest(c: Capability, skillsCatalog: Skill[] = CATAL
     '',
     'skills:                                 # how the work is done',
     ...(c.skills.length ? c.skills.map((id) => get(id)).filter((s) => s !== undefined).map((s) => `  - ${refOf(s)}@${ver(s.version)}`) : ['  []']),
-    'tools:                                  # how it acts on Northwind systems',
+    'tools:                                  # how it acts on GSK systems',
     ...(c.tools.length
       ? c.tools.flatMap((id) => {
           const t = get(id);
@@ -172,7 +172,7 @@ export function capabilityManifest(c: Capability, skillsCatalog: Skill[] = CATAL
   const uncertified = [...c.skills, ...c.tools].map(get).filter((s) => s && s.status !== 'Certified');
   const unlinked = c.tools.filter((t) => !usedBy(t)).length + c.data.filter((d) => !readVia(d.id)).length;
   return {
-    path: `nw-agents/${c.domainId}/capabilities/${slug(c.name)}.yaml`,
+    path: `gsk-agents/${c.domainId}/capabilities/${slug(c.name)}.yaml`,
     files: [{ name: 'capability.yaml', text: tidy(L) }],
     generated: [
       { label: 'Registered as', value: `${c.domainId.replace('-', '_')}.capabilities.${snake(c.name)}`, system: 'UC (parent skill)' },
@@ -227,7 +227,7 @@ export function podManifest(p: PodDef, caps: Capability[]): ManifestBundle {
     `budget: gateway/${p.id}-monthly`,
   ];
   return {
-    path: `nw-agents/${p.domainId}/pods/${p.id}.yaml`,
+    path: `gsk-agents/${p.domainId}/pods/${p.id}.yaml`,
     files: [{ name: 'pod.yaml', text: tidy(L) }],
     generated: [
       { label: 'Pod registration', value: `${agents.length.toString()} agents pinned`, system: 'Work plane' },

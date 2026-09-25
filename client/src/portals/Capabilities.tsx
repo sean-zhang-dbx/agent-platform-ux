@@ -132,7 +132,7 @@ export function CapabilitiesPortal() {
     <div>
       <PageHeader
         title="Capabilities"
-        sub="What Northwind can do, packaged: skills + tools + data + context."
+        sub="What GSK can do, packaged: skills + tools + data + context."
         right={
           <PrimaryButton onClick={() => void navigate('/capabilities/new')}>
             <Plus className="h-4 w-4" /> New capability
@@ -494,7 +494,7 @@ export function CapabilityDetailPage() {
                 [
                   'Agents',
                   pod
-                    ? `${podMemberCount(pod).toString()} (${pod.agentIds.length.toString()} Northwind · ${podPlatformAgents(pod).length.toString()} Databricks)`
+                    ? `${podMemberCount(pod).toString()} (${pod.agentIds.length.toString()} GSK · ${podPlatformAgents(pod).length.toString()} Databricks)`
                     : '—',
                 ],
                 ['Autonomy', pod?.autonomyTier.split(' · ')[0] ?? '—'],
@@ -532,7 +532,7 @@ export function CapabilityDetailPage() {
             </ul>
             {hold.length > 0 && (
               <div className="mt-3 rounded-lg bg-[var(--warn-soft)] p-2.5 text-xs">
-                GxP capability on Beta / Preview features. Run on non-GxP data until these reach GA (per the platform team
+                GxP capability on Beta / Preview features. Run on non-GxP data until these reach GA (per Code Orange
                 policy, to confirm).
               </div>
             )}

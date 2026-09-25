@@ -114,7 +114,7 @@ export function GovernancePage() {
             <div className="flex flex-wrap items-center gap-3 rounded-xl border border-[var(--warn)] bg-[var(--warn-soft)] px-4 py-3 text-sm">
               <AlertTriangle className="h-5 w-5 text-[var(--warn)]" />
               <span className="flex-1">
-                <b>{holds.length} GxP capabilities</b> depend on at least one Beta or Preview feature. Keep them on non-GxP data until those reach GA (platform team policy, to confirm).
+                <b>{holds.length} GxP capabilities</b> depend on at least one Beta or Preview feature. Keep them on non-GxP data until those reach GA (Code Orange policy, to confirm).
               </span>
               <Link to="/capabilities?filter=hold" className="font-medium text-[var(--brand-strong)] hover:underline">
                 Show them →
@@ -172,7 +172,7 @@ export function GovernancePage() {
 
       {tab === 'certification' && (
         <div>
-          <p className="mb-3 text-sm text-[var(--ink-soft)]">Only certified skills and tools can join Tier 1 and Tier 2 pods. Domain owners certify; The platform team owns the rules.</p>
+          <p className="mb-3 text-sm text-[var(--ink-soft)]">Only certified skills and tools can join Tier 1 and Tier 2 pods. Domain owners certify; Code Orange owns the rules.</p>
           {capQueue.length > 0 && (
             <Panel className="mb-4 divide-y divide-[var(--line)] overflow-hidden">
               <div className="bg-[var(--canvas)] px-4 py-2 text-xs font-semibold text-[var(--ink-faint)]">New capabilities submitted for certification</div>

@@ -38,7 +38,7 @@ export const PLATFORM: { id: string; name: string; status: Maturity; note: strin
   { id: 'uc-functions', name: 'Unity Catalog functions', status: 'GA', note: 'Governed tool calls' },
   { id: 'mcp-services', name: 'MCP services + ABAC grants', status: 'Beta', note: 'Governed access to external systems' },
   { id: 'external-agents', name: 'External agents via UC connection', status: 'Public Preview', note: 'e.g. Vertex AI agents on GCP' },
-  { id: 'appkit-agents', name: 'AppKit agents plugin', status: 'Beta', note: 'Runtime for Northwind-built agents in a Databricks App' },
+  { id: 'appkit-agents', name: 'AppKit agents plugin', status: 'Beta', note: 'Runtime for GSK-built agents in a Databricks App' },
   { id: 'ai-gateway', name: 'AI Gateway budgets & routing', status: 'GA', note: 'Spend caps, attribution, routing' },
   { id: 'mlflow-tracing', name: 'MLflow tracing', status: 'GA', note: 'End-to-end traces' },
   { id: 'prod-monitoring', name: 'MLflow production monitoring', status: 'Beta', note: 'Scheduled scorers on live traces' },
@@ -193,7 +193,7 @@ function describe(name: string, type: SkillType): string {
   const n = name.replace(/\s*\(.*?\)/g, '');
   switch (type) {
     case 'UC Skill':
-      return `How to apply ${n.toLowerCase()} the Northwind way: steps, rules, and what must be flagged for a person.`;
+      return `How to apply ${n.toLowerCase()} the GSK way: steps, rules, and what must be flagged for a person.`;
     case 'UC Function':
       return `Governed function ${n}. Returns only what the caller is granted to see.`;
     case 'MCP Service':
@@ -378,7 +378,7 @@ for (const seed of SEEDS) {
     });
   });
 
-  // Northwind-built agents: one per skill used by the pod's capabilities, plus a drafter.
+  // GSK-built agents: one per skill used by the pod's capabilities, plus a drafter.
   for (const pod of domainPods) {
     if (pod.id === SRP_ID) {
       for (const a of SRP_AGENTS) {
@@ -494,7 +494,7 @@ export interface WorkItem {
 }
 
 const HUMAN_TASKS: Record<string, string[]> = {
-  'rd-clin': ['Confirm site list for NWV-401', 'Unblind check for DSMB pack'],
+  'rd-clin': ['Confirm site list for ZOS-401', 'Unblind check for DSMB pack'],
   'rd-reg': ['Answer HA question 14 (clinical)', 'Approve label wording change'],
   quality: ['Close DEV-2311 before batch release', 'Sign CAPA-0922 effectiveness check'],
   supply: ['Approve allocation for EU shortfall', 'Confirm alternate supplier'],
@@ -513,10 +513,10 @@ const workItems: WorkItem[] = [
     podId: SRP_ID,
     domainId: 'rd-reg',
     status: 'Open',
-    owner: 'QA Lead · Northgate',
+    owner: 'QA Lead · Wavre',
     tier: 'Tier 2',
     due: '14 Oct',
-    blocks: 'Filing for NWP-2894512',
+    blocks: 'Filing for GSK-2894512',
     cost: 0,
   },
 ];
@@ -625,9 +625,9 @@ export const DENIALS: Denial[] = Array.from({ length: 42 }, (_, i) => {
 DENIALS.unshift({ id: 'DN-0', when: 'today', agent: 'Quality Review Agent', pod: 'Submission Readiness Pod', domainId: 'rd-reg', resource: 'manufacturing.batch_genealogy', reason: 'Not in agent grants' });
 
 // ── One kind of agent ─────────────────────────────────────────────────────────
-// Every agent is a pod member. Northwind-built agents get their know-how from skills; Databricks agents
+// Every agent is a pod member. GSK-built agents get their know-how from skills; Databricks agents
 // (Genie Agents, Knowledge Assistants) and external agents (Vertex AI) come ready-made.
-export type BuiltBy = 'Northwind' | 'Databricks' | 'External';
+export type BuiltBy = 'GSK' | 'Databricks' | 'External';
 export function builtBy(s: Skill): BuiltBy {
   return s.runsOn?.startsWith('GCP') ? 'External' : 'Databricks';
 }
@@ -655,7 +655,7 @@ export interface AgentRow {
 }
 const PLATFORM_AGENT_ENTRIES = CATALOG.filter((s) => s.type === 'Genie Agent' || s.type === 'Knowledge Assistant');
 export const ALL_AGENTS: AgentRow[] = [
-  ...ROLE_AGENTS.map((a) => ({ id: a.id, name: a.name, builtBy: 'Northwind' as const, kind: 'Skills-based', podIds: [a.podId], domainId: a.domainId, runs: a.runs30d, status: 'Certified', role: a })),
+  ...ROLE_AGENTS.map((a) => ({ id: a.id, name: a.name, builtBy: 'GSK' as const, kind: 'Skills-based', podIds: [a.podId], domainId: a.domainId, runs: a.runs30d, status: 'Certified', role: a })),
   ...PLATFORM_AGENT_ENTRIES.map((s) => {
     const pods = POD_LIST.filter((p) => podPlatformAgents(p).some((x) => x.id === s.id));
     return {

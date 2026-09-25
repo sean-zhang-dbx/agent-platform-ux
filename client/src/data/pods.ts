@@ -133,9 +133,9 @@ export function agentById(id: AgentId): PodAgent {
 }
 
 export const POD_RUN_HISTORY = [
-  { run: 'RUN-1043', request: 'Readiness check · NWP-1907733 (Phase II)', duration: '3m 41s', cost: 0.39, outcome: 'Approved' },
-  { run: 'RUN-1039', request: 'Readiness check · NWP-3316540 (Phase III)', duration: '4m 02s', cost: 0.47, outcome: 'Changes requested' },
-  { run: 'RUN-1031', request: 'Readiness check · NWP-2894512 (interim)', duration: '3m 18s', cost: 0.36, outcome: 'Approved' },
-  { run: 'RUN-1027', request: 'Readiness check · NWP-0551208 (Phase I)', duration: '2m 55s', cost: 0.31, outcome: 'Rejected' },
-  { run: 'RUN-1020', request: 'Readiness check · NWP-1907733 (Phase II)', duration: '3m 50s', cost: 0.41, outcome: 'Approved' },
+  { run: 'RUN-1043', request: 'Readiness check · GSK-1907733 (Phase II)', duration: '3m 41s', cost: 0.39, outcome: 'Approved' },
+  { run: 'RUN-1039', request: 'Readiness check · GSK-3316540 (Phase III)', duration: '4m 02s', cost: 0.47, outcome: 'Changes requested' },
+  { run: 'RUN-1031', request: 'Readiness check · GSK-2894512 (interim)', duration: '3m 18s', cost: 0.36, outcome: 'Approved' },
+  { run: 'RUN-1027', request: 'Readiness check · GSK-0551208 (Phase I)', duration: '2m 55s', cost: 0.31, outcome: 'Rejected' },
+  { run: 'RUN-1020', request: 'Readiness check · GSK-1907733 (Phase II)', duration: '3m 50s', cost: 0.41, outcome: 'Approved' },
 ];
