@@ -15,7 +15,7 @@ interface Live extends OpTicket {
 
 function LiveModal({ onClose }: { onClose: () => void }) {
   const [paused, setPaused] = useState(false);
-  const [now, setNow] = useState(Date.now());
+  const [now, setNow] = useState(() => Date.now());
   const [counts, setCounts] = useState({ ...IT_LIVE_SEED });
   const [feed, setFeed] = useState<Live[]>(() => IT_STREAM.slice(0, 5).map((t, i) => ({ ...t, id: `INC00${(48213 - i).toString()}`, at: Date.now() - (i + 1) * 9000 })));
   const seq = useRef(48214);
@@ -64,7 +64,7 @@ function LiveModal({ onClose }: { onClose: () => void }) {
 
   return (
     <div className="fixed inset-0 z-50 flex flex-col bg-black/60" role="dialog" aria-modal="true">
-      <div className="flex items-center justify-between border-b border-white/10 px-4 py-3 text-white">
+      <div className="flex items-center justify-between border-b border-white/10 px-4 py-3 text-white bg-[#1f1d1b]">
         <div className="flex items-center gap-2 text-sm font-medium">
           <Radio className="h-4 w-4" /> IT Service Desk Pod · Live operations
           <span className="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-2 py-0.5 text-[11px]">

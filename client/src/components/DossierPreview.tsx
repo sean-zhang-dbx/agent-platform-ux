@@ -37,7 +37,7 @@ function DossierModal({ onClose }: { onClose: () => void }) {
   return (
     <div className="fixed inset-0 z-50 flex flex-col bg-black/60" role="dialog" aria-modal="true">
       <style>{`@media print { body > #root { visibility: hidden; } .dossier-doc, .dossier-doc * { visibility: visible; } .dossier-doc { position: absolute; inset: 0; overflow: visible; background: #fff; } .dossier-page { box-shadow: none !important; page-break-after: always; } .dossier-noprint { display: none !important; } }`}</style>
-      <div className="dossier-noprint flex items-center justify-between border-b border-white/10 px-4 py-3 text-white">
+      <div className="dossier-noprint flex items-center justify-between border-b border-white/10 px-4 py-3 text-white bg-[#1f1d1b]">
         <div className="flex items-center gap-2 text-sm font-medium">
           <FileText className="h-4 w-4" /> Dossier draft · NWP-2894512 · Module 2
           <span className="rounded bg-white/15 px-1.5 py-0.5 text-[11px]">DRAFT · not signed</span>

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate, useParams, useSearchParams } from 'react-router';
-import { MessageSquare, Play, Search, ShieldCheck } from 'lucide-react';
+import { MessageSquare, Play, Search, ShieldCheck, ClipboardCheck } from 'lucide-react';
 import { useStore } from '../state/store';
 import { ITSP_ID, SRP_ID, gatesForPod } from '../data/pods';
 import { isOperationalPod } from '../data/itservice';
@@ -123,6 +123,11 @@ export function PodDetailPage() {
         right={
           caps[0] && (
             <div className="flex gap-2">
+              {pod.id === 'trial-feasibility' && (
+                <SecondaryButton onClick={() => void navigate('/feasibility')}>
+                  <ClipboardCheck className="h-4 w-4" /> Run live workflow
+                </SecondaryButton>
+              )}
               <SecondaryButton onClick={() => void navigate(`/ask?cap=${caps[0].id}`)}>
                 <MessageSquare className="h-4 w-4" /> {isOperationalPod(pod.id) ? 'Trace one ticket' : 'Use in Ask'}
               </SecondaryButton>
